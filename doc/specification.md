@@ -112,6 +112,52 @@ Type-denoter ::= Identifier ; SimpleTypeDenoter
 
 ```
 
+### Final Transformed Grammar
+
+After carrying out grammar transformations, specifically Left Factorisation, Left Recursion Elimination, and Subsitution, we get the final grammar as:
+
+```
+Program ::= single-Command
+
+Command ::= single-Command (";" single-Command)*
+
+single-Command ::= Identifier (":=" Expression | "(" Expression ")")
+                  | "if" Expression "then" single-Command "else" single-Command
+                  | "while" Expression "do" single-Command
+                  | "let" Declaration "in" single-Command
+                  | "begin" Command "end"
+
+Expression ::= primary-Expression (Operator primary-Expression)*
+
+primary-Expression ::= Integer-Literal 
+                    | Identifier 
+                    | Operator primary-Expression
+                    | "(" Expression ")"
+
+
+Declaration ::= single-Declaration (";" single-Declaration)*
+
+single-Declaration ::= "const" Identifier "~" Expression
+                | "var" Identifier ":" Type-denoter
+
+Type-denoter ::= Identifier
+
+(The rest of the grammar i.e., the lexical grammar, remains the same)
+
+```
+
+The final lexical grammar is:
+
+```
+Token ::= Letter (Letter | Digit)* ; Identifier
+        | Digit Digit*  ; Integer-Literal 
+        | + | - | * | / | < | > | = | \ ; Operator
+        | ; | : (= | epsilon) | ~ | ( | ) | eot ; subset of keywords (the rest culled from the identifiers)
+
+Separator ::= ! Graphic* eol | space | eol
+
+```
+
 # Semantics
 
 A command C is executed to update variables.
