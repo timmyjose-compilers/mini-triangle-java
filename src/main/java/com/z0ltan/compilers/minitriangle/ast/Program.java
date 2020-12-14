@@ -13,7 +13,7 @@ public class Program extends Ast {
   public boolean equals(Object o) {
     if (o == null || !(o instanceof Program)) {
       return false;
-    }
+  }
 
     Program other = (Program)o;
     return this.C.equals(other.C);
