@@ -119,10 +119,23 @@ public class Scanner {
       case '<':
       case '>':
       case '=':
-      case '\\':
         {
           takeIt();
           kind = TokenType.OPERATOR;
+        }
+        break;
+
+      case '\\':
+        {
+          takeIt();
+          if (currentChar.character == '=') {
+            takeIt();
+            kind = TokenType.OPERATOR;
+          } else {
+            ErrorReporter.report("unexpected character " + currentChar.character + ", expected to take character '=' for the 'not-equal' operator",
+                currentChar.position.line,
+                currentChar.position.column);
+          }
         }
         break;
 

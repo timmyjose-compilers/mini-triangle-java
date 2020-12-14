@@ -2,15 +2,31 @@
 
 let 
   var sum: Integer;
-  var x: Integer;
+              var x: Integer;
+  
+
+
+
+
+
+
+
+
+
   var y: Integer;
-  var z: Integer
+  var z: Integer;
+
+
+
 in
-  begin
+
+
+
+begin
     sum := 0;
     x := 1;
-    y := 2;
+              y := 2;
     z := 3;
     sum := x + y * z; ! sum = 7
-    putint(sum)
+    putint(sum);
   end

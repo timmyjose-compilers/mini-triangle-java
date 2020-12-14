@@ -6,10 +6,10 @@ let
   var half1: Integer;
   var half2: Integer;
   var i: Integer;
-  var count: Integer
+  var count: Integer;
 in
   begin
-    x := 10;
+    getint(x);
     half := (x / 2) + 1;
     half1 := half + 1;
     half2 := half1 + 1;
@@ -17,14 +17,14 @@ in
     count := 2;
 
     while i < half do
-      if x \= i then
-        i :=  i + 1
+      if (x \ i) then
+        i :=  i + 1;
       else
         i := half2;
 
     if (i = half) then
-      putint(1) ! prime
+      putint(1); ! prime
     else
       putint(0); ! not a prime
-   end
+    end
 

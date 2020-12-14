@@ -16,6 +16,7 @@ public class Token {
     keywords.put("begin", TokenType.BEGIN);
     keywords.put("const", TokenType.CONST);
     keywords.put("do", TokenType.DO);
+    keywords.put("else", TokenType.ELSE);
     keywords.put("end", TokenType.END);
     keywords.put("func", TokenType.FUNCTION);
     keywords.put("if", TokenType.IF);
