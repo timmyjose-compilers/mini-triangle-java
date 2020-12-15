@@ -2,12 +2,22 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class BinaryExpression extends Expression {
   public Expression E1;
   public Operator O;
   public Expression E2;
 
+  public BinaryExpression(Expression E1, Operator O, Expression E2, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.E1 = E1;
+    this.O = O;
+    this.E2 = E2;
+  }
+
   public BinaryExpression(Expression E1, Operator O, Expression E2) {
+    super(null);
     this.E1 = E1;
     this.O = O;
     this.E2 = E2;

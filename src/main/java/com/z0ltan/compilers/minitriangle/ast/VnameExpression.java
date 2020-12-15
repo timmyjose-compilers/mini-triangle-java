@@ -2,10 +2,18 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class VnameExpression extends Expression {
   public Vname V;
   
+  public VnameExpression(Vname V, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.V = V;
+  }
+ 
   public VnameExpression(Vname V) {
+    super(null);
     this.V = V;
   }
 

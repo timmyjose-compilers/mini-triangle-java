@@ -139,6 +139,11 @@ Declaration ::= single-Declaration (";" single-Declaration)*
 
 single-Declaration ::= "const" Identifier "~" Expression
                 | "var" Identifier ":" Type-denoter
+                | "func" Identifier "(" params? ")" ":" Type-Denoter "~" Expression
+
+params ::= param ("," param)* 
+
+param ::= Identfier ":" Type-Denoter
 
 Type-denoter ::= Identifier
 

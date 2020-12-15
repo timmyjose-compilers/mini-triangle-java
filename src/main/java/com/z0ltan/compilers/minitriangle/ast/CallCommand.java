@@ -1,12 +1,20 @@
 package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 
 public class CallCommand extends Command {
   public Identifier I;
   public Expression E;
 
+  public CallCommand(Identifier I, Expression E, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.I = I;
+    this.E = E;
+  }
+
   public CallCommand(Identifier I, Expression E) {
+    super(null);
     this.I = I;
     this.E = E;
   }

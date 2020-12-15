@@ -2,9 +2,15 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class IntegerLiteral extends Terminal {
+  public IntegerLiteral(String spelling, SourcePosition sourcePosition) {
+    super(spelling, sourcePosition);
+  }
+
   public IntegerLiteral(String spelling) {
-    super(spelling);
+    super(spelling, null);
   }
 
   @Override

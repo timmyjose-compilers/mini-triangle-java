@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class SequentialDeclaration extends Declaration {
   public Declaration D1;
   public Declaration D2;
 
+  public SequentialDeclaration(Declaration D1, Declaration D2, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.D1 = D1;
+    this.D2 = D2;
+  }
+
   public SequentialDeclaration(Declaration D1, Declaration D2) {
+    super(null);
     this.D1 = D1;
     this.D2 = D2;
   }

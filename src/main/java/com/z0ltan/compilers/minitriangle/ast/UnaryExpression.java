@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class UnaryExpression extends Expression {
   public Operator O;
   public Expression E;
 
+  public UnaryExpression(Operator O, Expression E, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.O = O;
+    this.E = E;
+  }
+
   public UnaryExpression(Operator O, Expression E) {
+    super(null);
     this.O = O;
     this.E = E;
   }

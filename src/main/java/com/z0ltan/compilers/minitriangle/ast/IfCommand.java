@@ -2,12 +2,22 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class IfCommand extends Command {
   public Expression E;
   public Command C1;
   public Command C2;
 
+  public IfCommand(Expression E, Command C1, Command C2, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.E = E;
+    this.C1 = C1;
+    this.C2 = C2;
+  }
+
   public IfCommand(Expression E, Command C1, Command C2) {
+    super(null);
     this.E = E;
     this.C1 = C1;
     this.C2 = C2;

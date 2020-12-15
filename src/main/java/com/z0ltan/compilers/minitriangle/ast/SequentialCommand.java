@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class SequentialCommand extends Command {
   public Command C1;
   public Command C2;
 
+  public SequentialCommand(Command C1, Command C2, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.C1 = C1;
+    this.C2 = C2;
+  }
+
   public SequentialCommand(Command C1, Command C2) {
+    super(null);
     this.C1 = C1;
     this.C2 = C2;
   }

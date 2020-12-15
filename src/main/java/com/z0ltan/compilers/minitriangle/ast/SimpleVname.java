@@ -2,10 +2,18 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class SimpleVname extends Vname {
   public Identifier I;
 
+  public SimpleVname(Identifier I, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.I = I;
+  }
+
   public SimpleVname(Identifier I) {
+    super(null);
     this.I = I;
   }
 

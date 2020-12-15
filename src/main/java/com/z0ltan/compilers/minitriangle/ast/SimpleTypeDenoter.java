@@ -2,10 +2,18 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class SimpleTypeDenoter extends TypeDenoter {
   public Identifier I;
 
+  public SimpleTypeDenoter(Identifier I, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.I = I;
+  }
+
   public SimpleTypeDenoter(Identifier I) {
+    super(null);
     this.I = I;
   }
 

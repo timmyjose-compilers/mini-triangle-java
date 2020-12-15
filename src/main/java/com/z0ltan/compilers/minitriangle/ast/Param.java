@@ -2,8 +2,8 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 
-public abstract class Declaration extends Ast {
-  public Declaration(SourcePosition sourcePosition) {
+public abstract class Param extends Ast {
+  public Param(SourcePosition sourcePosition) {
     super(sourcePosition);
   }
 }

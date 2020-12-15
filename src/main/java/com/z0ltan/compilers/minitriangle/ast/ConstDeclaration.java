@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class ConstDeclaration extends Declaration {
   public Identifier I;
   public Expression E;
 
+  public ConstDeclaration(Identifier I, Expression E, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.I = I;
+    this.E = E;
+  }
+
   public ConstDeclaration(Identifier I, Expression E) {
+    super(null);
     this.I = I;
     this.E = E;
   }

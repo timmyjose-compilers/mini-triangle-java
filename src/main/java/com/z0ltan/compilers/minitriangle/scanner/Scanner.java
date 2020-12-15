@@ -8,25 +8,23 @@ public class Scanner {
   private Char currentChar;
   private TokenType currentKind;
   private StringBuffer currentSpelling;
-  private Position currentPosition;
+  private int currentLine;
+  private int currentColumn;
 
-  public Scanner(String filepath) {
-    this.source = new SourceFile(filepath);
-    this.currentChar = Char.nullCharacter();
-    this.currentPosition = Position.illegalPosition();
+  public Scanner(String input) {
+    this.source = new SourceFile(input);
     initialize();
   }
 
   public Scanner(Path filepath) {
     this.source = new SourceFile(filepath);
-    this.currentChar = Char.nullCharacter();
-    this.currentPosition = Position.illegalPosition();
     initialize();
   }
 
   private void initialize() {
     this.currentChar = source.nextCharacter();
-    this.currentPosition = new Position(1, 1);
+    this.currentLine = -1;
+    this.currentColumn = -1;
   }
 
   private void skipIt() {
@@ -36,8 +34,8 @@ public class Scanner {
   private void skip(char expectedChar) {
     if (currentChar.character != expectedChar) {
       ErrorReporter.report("expected to skip character " + expectedChar + ", but got character " + currentChar.character,
-          currentChar.position.line,
-          currentChar.position.line);
+          currentChar.line,
+          currentChar.line);
     }
 
     currentChar = source.nextCharacter();
@@ -51,8 +49,8 @@ public class Scanner {
   private void take(char expectedChar) {
     if (currentChar.character != expectedChar) {
       ErrorReporter.report("expected to take character " + expectedChar + ", but got character " + currentChar.character,
-          currentChar.position.line,
-          currentChar.position.column);
+          currentChar.line,
+          currentChar.column);
     }
 
     currentSpelling.append(currentChar.character);
@@ -81,7 +79,8 @@ public class Scanner {
 
   TokenType scanToken() {
     TokenType kind = TokenType.ILLEGAL;
-    currentPosition = currentChar.position;
+    currentLine = currentChar.line;
+    currentColumn = currentChar.column;
 
     switch (currentChar.character) {
       case '\u0000':
@@ -133,8 +132,8 @@ public class Scanner {
             kind = TokenType.OPERATOR;
           } else {
             ErrorReporter.report("unexpected character " + currentChar.character + ", expected to take character '=' for the 'not-equal' operator",
-                currentChar.position.line,
-                currentChar.position.column);
+                currentChar.line,
+                currentChar.column);
           }
         }
         break;
@@ -247,8 +246,8 @@ public class Scanner {
 
       default:
         ErrorReporter.report("unexpected character " + currentChar.character,
-            currentChar.position.line,
-            currentChar.position.column);
+            currentChar.line,
+            currentChar.column);
     }
 
     return kind;
@@ -262,6 +261,6 @@ public class Scanner {
     currentSpelling = new StringBuffer();
     currentKind = scanToken();
 
-    return new Token(currentKind, currentSpelling.toString(), currentPosition);
+    return new Token(currentKind, currentSpelling.toString(), currentLine, currentColumn);
   }
 }

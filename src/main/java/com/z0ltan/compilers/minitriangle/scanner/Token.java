@@ -6,7 +6,8 @@ import java.util.HashMap;
 public class Token {
   public TokenType kind;
   public String spelling;
-  public Position position;
+  public int line;
+  public int column;
 
   private static final Map<String, TokenType> keywords;
 
@@ -36,18 +37,19 @@ public class Token {
     return Token.keywords.get(spelling);
   }
 
-  public Token(TokenType kind, String spelling, Position position) {
+  public Token(TokenType kind, String spelling, int line, int column) {
     this.spelling = spelling;
     if (kind == TokenType.IDENTIFIER && isKeyword(spelling)) {
       this.kind = getKeywordKind(spelling);
     } else {
       this.kind = kind;
     }
-    this.position = position;
+    this.line = line;
+    this.column = column;
   }
 
   @Override
   public String toString() {
-    return "<kind=" + this.kind + ", spelling=" + this.spelling + ">";
+    return "<kind= " + this.kind + ", spelling=" + this.spelling + ", line=" + this.line + ", column=" + this.column + ">";
   }
 }

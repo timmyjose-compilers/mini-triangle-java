@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class LetCommand extends Command {
   public Declaration D;
   public Command C;
 
+  public LetCommand(Declaration D, Command C, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.D = D;
+    this.C = C;
+  }
+
   public LetCommand(Declaration D, Command C) {
+    super(null);
     this.D = D;
     this.C = C;
   }

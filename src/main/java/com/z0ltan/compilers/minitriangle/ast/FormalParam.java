@@ -1,20 +1,19 @@
 package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
-
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 
-public class VarDeclaration extends Declaration {
+public class FormalParam extends Param {
   public Identifier I;
   public TypeDenoter T;
 
-  public VarDeclaration(Identifier I, TypeDenoter T, SourcePosition sourcePosition) {
+  public FormalParam(Identifier I, TypeDenoter T, SourcePosition sourcePosition) {
     super(sourcePosition);
     this.I = I;
     this.T = T;
   }
 
-  public VarDeclaration(Identifier I, TypeDenoter T) {
+  public FormalParam(Identifier I, TypeDenoter T) {
     super(null);
     this.I = I;
     this.T = T;
@@ -22,11 +21,11 @@ public class VarDeclaration extends Declaration {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || !(o instanceof VarDeclaration)) {
+    if (o == null || !(o instanceof FormalParam)) {
       return false;
     }
 
-    VarDeclaration other = (VarDeclaration)o;
+    FormalParam other = (FormalParam)o;
     return this.I.equals(other.I) && this.T.equals(other.T);
   }
 
@@ -37,6 +36,6 @@ public class VarDeclaration extends Declaration {
 
   @Override
   public String toString() {
-    return "VarDeclaration { I = " + this.I + ", T = " + this.T + " }";
+    return "FormalParam { I = " + this.I + ", T = " + this.T + " }";
   }
 }

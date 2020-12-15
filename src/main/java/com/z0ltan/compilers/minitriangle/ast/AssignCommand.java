@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class AssignCommand extends Command {
   public Vname V;
   public Expression E;
 
+  public AssignCommand(Vname V, Expression E, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.V = V;
+    this.E = E;
+  }
+
   public AssignCommand(Vname V, Expression E) {
+    super(null);
     this.V = V;
     this.E = E;
   }

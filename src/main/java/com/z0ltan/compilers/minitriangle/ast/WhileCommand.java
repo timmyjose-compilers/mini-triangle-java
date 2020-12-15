@@ -2,11 +2,20 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class WhileCommand extends Command {
   public Expression E;
   public Command C;
 
+  public WhileCommand(Expression E, Command C, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.E = E;
+    this.C = C;
+  }
+
   public WhileCommand(Expression E, Command C) {
+    super(null);
     this.E = E;
     this.C = C;
   }

@@ -2,10 +2,18 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class IntegerExpression extends Expression {
   public IntegerLiteral I;
 
+  public IntegerExpression(IntegerLiteral I, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.I = I;
+  }
+
   public IntegerExpression(IntegerLiteral I) {
+    super(null);
     this.I = I;
   }
 

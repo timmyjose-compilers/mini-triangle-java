@@ -2,10 +2,18 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class Program extends Ast {
   public Command C;
 
+  public Program(Command C, SourcePosition sourcePosition) {
+    super(sourcePosition);
+    this.C = C;
+  }
+
   public Program(Command C) {
+    super(null);
     this.C = C;
   }
 

@@ -2,9 +2,15 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 
+import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+
 public class Operator extends Terminal {
+  public Operator(String spelling, SourcePosition sourcePosition) {
+    super(spelling, sourcePosition);
+  }
+
   public Operator(String spelling) {
-    super(spelling);
+    super(spelling, null);
   }
 
   @Override
