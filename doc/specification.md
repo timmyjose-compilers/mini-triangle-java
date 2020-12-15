@@ -130,20 +130,23 @@ single-Command ::= Identifier (":=" Expression | "(" Expression ")")
 Expression ::= primary-Expression (Operator primary-Expression)*
 
 primary-Expression ::= Integer-Literal 
-                    | Identifier 
+                    | Identifier (epsilon | "(" argument? ")")
                     | Operator primary-Expression
                     | "(" Expression ")"
 
+argument ::= call-argument ("." call-argument)*
+
+call-argument ::= expression
 
 Declaration ::= single-Declaration (";" single-Declaration)*
 
 single-Declaration ::= "const" Identifier "~" Expression
                 | "var" Identifier ":" Type-denoter
-                | "func" Identifier "(" params? ")" ":" Type-Denoter "~" Expression
+                | "func" Identifier "(" param? ")" ":" Type-Denoter "~" Expression
 
 params ::= param ("," param)* 
 
-param ::= Identfier ":" Type-Denoter
+param ::= vname ":" Type-Denoter
 
 Type-denoter ::= Identifier
 

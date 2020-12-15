@@ -26,11 +26,15 @@ import com.z0ltan.compilers.minitriangle.ast.SimpleTypeDenoter;
 import com.z0ltan.compilers.minitriangle.ast.Expression;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
+import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.UnaryExpression;
 import com.z0ltan.compilers.minitriangle.ast.BinaryExpression;
 import com.z0ltan.compilers.minitriangle.ast.Param;
 import com.z0ltan.compilers.minitriangle.ast.FormalParam;
 import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.Argument;
+import com.z0ltan.compilers.minitriangle.ast.CallArgument;
+import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
@@ -166,6 +170,7 @@ public class Parser {
         {
           acceptIt();
           Command cmd2 = parseCommand();
+          System.out.println(cmd2);
           accept(TokenType.END);
           finish(cmdPos);
           cmd = cmd2;
@@ -200,7 +205,7 @@ public class Parser {
     return cmd1;
   }
 
-  // primary-Expression ::= IntegerExpression | VnameExpression | UnaryExpression | BinaryExpression
+  // primary-Expression ::= IntegerExpression | VnameExpression | CallExpression | UnaryExpression | BinaryExpression 
   Expression parsePrimaryExpression() {
     SourcePosition exprPos = new SourcePosition();
     start(exprPos);
@@ -218,8 +223,16 @@ public class Parser {
       case IDENTIFIER:
         {
           Vname vname = parseVname();
-          finish(exprPos);
-          expr = new VnameExpression(vname, exprPos);
+          if (currentToken.kind == TokenType.LEFT_PAREN) {
+            acceptIt();
+            Argument args = parseArgument();
+            accept(TokenType.RIGHT_PAREN);
+            finish(exprPos);
+            expr = new CallExpression(vname, args, exprPos);
+          } else {
+            finish(exprPos);
+            expr = new VnameExpression(vname, exprPos);
+          }
         }
         break;
 
@@ -249,6 +262,32 @@ public class Parser {
     }
 
     return expr;
+  }
+
+  // argument ::= call-argument ("," call-argument)*
+  private Argument parseArgument() {
+    SourcePosition argPos = new SourcePosition();
+    start(argPos);
+    Argument arg1 = parseCallArgument();
+
+    while (currentToken.kind == TokenType.COMMA) {
+      acceptIt();
+      Argument arg2 = parseCallArgument();
+      finish(argPos);
+      arg1 = new SequentialArgument(arg1, arg2, argPos);
+    }
+
+    return arg1;
+  }
+
+  // call-argument ::= expression
+  private Argument parseCallArgument() {
+    SourcePosition argPos = new SourcePosition();
+    start(argPos);
+    Expression expr = parseExpression();
+    finish(argPos);
+
+    return new CallArgument(expr, argPos);
   }
 
   // vname ::= Identifier
