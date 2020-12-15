@@ -19,6 +19,7 @@ import com.z0ltan.compilers.minitriangle.ast.SequentialCommand;
 import com.z0ltan.compilers.minitriangle.ast.Declaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.Vname;
 import com.z0ltan.compilers.minitriangle.ast.SimpleVname;
@@ -27,7 +28,14 @@ import com.z0ltan.compilers.minitriangle.ast.SimpleTypeDenoter;
 import com.z0ltan.compilers.minitriangle.ast.Expression;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
+import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.BinaryExpression;
+import com.z0ltan.compilers.minitriangle.ast.Param;
+import com.z0ltan.compilers.minitriangle.ast.FormalParam;
+import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.Argument;
+import com.z0ltan.compilers.minitriangle.ast.CallArgument;
+import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
@@ -101,32 +109,123 @@ public class ParserTest extends TestCase {
 
 
   public void testFunction() {
-    Program expectedAst = null;
+    Program expectedAst = new Program(
+        new LetCommand(
+          new SequentialDeclaration(
+            new SequentialDeclaration(
+              new SequentialDeclaration(
+                new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                new VarDeclaration(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer")))),
+              new VarDeclaration(new Identifier("z"), new SimpleTypeDenoter(new Identifier("Integer")))),
+            new FunctionDeclaration(
+              new Identifier("foo"), 
+              new SequentialParam(
+                new FormalParam(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                new FormalParam(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer")))),
+              new SimpleTypeDenoter(new Identifier("Integer")),
+              new BinaryExpression(
+                new BinaryExpression(
+                  new VnameExpression(new SimpleVname(new Identifier("x"))), 
+                  new Operator("+"), 
+                  new IntegerExpression(new IntegerLiteral("1"))),
+                new Operator("+"), 
+                new VnameExpression(new SimpleVname(new Identifier("y")))))),
+          new SequentialCommand(
+            new SequentialCommand(
+              new SequentialCommand(
+                new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("3"))),
+                new AssignCommand(new SimpleVname(new Identifier("y")), new IntegerExpression(new IntegerLiteral("4")))),
+              new AssignCommand(new SimpleVname(new Identifier("z")), 
+                new CallExpression(new SimpleVname(new Identifier("foo")), 
+                  new SequentialArgument(new CallArgument(new VnameExpression(new SimpleVname(new Identifier("x")))),
+                    new CallArgument(new VnameExpression(new SimpleVname(new Identifier("y")))))))),
+            new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("z")))))));
     Parser parser = new Parser(Paths.get("samples/function.mt"));
     Program program = parser.parse();
-    System.out.println(program);
   }
 
-  public void xtestScope() {
-    Program expectedAst = null;
+  public void testScope() {
+    Program expectedAst =
+      new Program(
+          new LetCommand(
+            new SequentialDeclaration(
+              new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new VarDeclaration(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer")))),
+            new SequentialCommand(
+              new SequentialCommand(
+                new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("11"))),
+                new AssignCommand(new SimpleVname(new Identifier("y")), new IntegerExpression(new IntegerLiteral("22")))),
+              new LetCommand(
+                new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                new SequentialCommand(
+                  new SequentialCommand(
+                    new LetCommand(
+                      new VarDeclaration(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                      new SequentialCommand(
+                        new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("100"))),
+                        new AssignCommand(new SimpleVname(new Identifier("x")), new VnameExpression(new SimpleVname(new Identifier("y")))))),
+                    new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("y"))))),
+                  new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("x")))))))));
+
     Parser parser = new Parser(Paths.get("samples/scope.mt"));
     Program program = parser.parse();
-    //System.out.println(program);
-
+    assertEquals(expectedAst, program);
   }
 
   public void xtestScopeGiven() {
-    Program expectedAst = null;
+    Program expectedAst = 
+      new Program(
+          new LetCommand(
+            new SequentialDeclaration(
+              new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new VarDeclaration(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer")))),
+            new SequentialCommand(
+              new SequentialCommand(
+                new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("1"))),
+                new AssignCommand(new SimpleVname(new Identifier("y")), new IntegerExpression(new IntegerLiteral("2")))),
+              new LetCommand(
+                new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                new SequentialCommand(
+                  new AssignCommand(new SimpleVname(new Identifier("x")), new VnameExpression(new SimpleVname(new Identifier("y")))),
+                  new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("x")))))))));
+
     Parser parser = new Parser(Paths.get("samples/scope_given.mt"));
     Program program = parser.parse();
-    //System.out.println(program);
-
+    assertEquals(expectedAst, program);
   }
 
   public void xtestPrecedence() {
-    Program expectedAst = null;
+    Program expectedAst = 
+      new Program(
+          new LetCommand(
+            new SequentialDeclaration(
+              new VarDeclaration(new Identifier("sum"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new SequentialDeclaration(
+                new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                new SequentialDeclaration(
+                  new VarDeclaration(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                  new VarDeclaration(new Identifier("z"), new SimpleTypeDenoter(new Identifier("Integer")))))),
+            new SequentialCommand(
+              new AssignCommand(new SimpleVname(new Identifier("sum")), new IntegerExpression(new IntegerLiteral("0"))),
+              new SequentialCommand(
+                new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("1"))),
+                new SequentialCommand(
+                  new AssignCommand(new SimpleVname(new Identifier("y")), new IntegerExpression(new IntegerLiteral("2"))),
+                  new SequentialCommand(
+                    new AssignCommand(new SimpleVname(new Identifier("z")), new IntegerExpression(new IntegerLiteral("3"))),
+                    new SequentialCommand(
+                      new AssignCommand(
+                        new SimpleVname(new Identifier("sum")),
+                        new BinaryExpression(
+                          new BinaryExpression(
+                            new VnameExpression(new SimpleVname(new Identifier("x"))), 
+                            new Operator("+"), 
+                            new VnameExpression(new SimpleVname(new Identifier("y")))),
+                          new Operator("*"),
+                          new VnameExpression(new SimpleVname(new Identifier("z"))))),
+                        new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("sum")))))))))));
+
     Parser parser = new Parser(Paths.get("samples/precedence.mt"));
     Program program = parser.parse();
-    //System.out.println(program);
   }
 }

@@ -170,7 +170,6 @@ public class Parser {
         {
           acceptIt();
           Command cmd2 = parseCommand();
-          System.out.println(cmd2);
           accept(TokenType.END);
           finish(cmdPos);
           cmd = cmd2;
