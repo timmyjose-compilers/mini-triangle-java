@@ -7,7 +7,8 @@ import java.nio.file.Paths;
 
 import com.z0ltan.compilers.minitriangle.scanner.TokenType;
 import com.z0ltan.compilers.minitriangle.scanner.Token;
-import com.z0ltan.compilers.minitriangle.scanner.Scanner;
+import com.z0ltan.compilers.minitriangle.parser.Parser;
+import com.z0ltan.compilers.minitriangle.ast.Program;
 import com.z0ltan.compilers.minitriangle.error.MiniTriangleException;
 
 public class App {
@@ -37,10 +38,9 @@ public class App {
         }
 
         try {
-          Scanner scanner = new Scanner(line);
-          for (Token token = scanner.scan(); token.kind != TokenType.EOF; token = scanner.scan()) {
-            System.out.println(token);
-          }
+          Parser parser = new Parser(line);
+          Program program = parser.parse();
+          System.out.println(program);
         } catch (MiniTriangleException ex) {
           System.err.println("Error while scanning: " + ex.getLocalizedMessage());
         }
@@ -52,10 +52,9 @@ public class App {
 
   private static void runFile(String filepath) {
     try {
-      Scanner scanner = new Scanner(Paths.get(filepath));
-      for (Token token = scanner.scan(); token.kind != TokenType.EOF; token = scanner.scan()) {
-        System.out.println(token);
-      }
+      Parser parser = new Parser(Paths.get(filepath));
+      Program program = parser.parse();
+      System.out.println(program);
     } catch (Exception ex) {
       throw new MiniTriangleException(ex);
     }
