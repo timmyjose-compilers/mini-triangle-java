@@ -168,6 +168,8 @@ Separator ::= ! Graphic* eol | space | eol
 
 # Semantics
 
+## General Rules
+
 A command C is executed to update variables.
   - An AssignCommand V := E is executed as follows: first the expression E is evaluated to yield a value v, and then v is assigned to the variable-or-value V.
   - A CallCommand I(E) is executed as follows: first the expression E is evaluated to yield a value v, and then the procedure bound to I is called with v as its
@@ -198,3 +200,8 @@ A declaration D is elaborated to produce bindings. It may also have the side-eff
   - A VarDeclaration var D: T is elaborated as follows: I is bound to a newly-allocated variable of type T, with an undefined initial value. This variable will be 
     deallocated upon exit from the block.
   - A SequentialDeclaration D1 ; D2 is elaborated as follows: elaborate D1 producing bindings b1, and then elaborate D2 producing bindings b2 in the environment overlaid by b1.
+
+## Specific Contextual Analysis Rules
+
+Assuming a visitor-pattern approach:
+
