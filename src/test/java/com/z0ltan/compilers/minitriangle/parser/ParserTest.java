@@ -54,13 +54,13 @@ public class ParserTest extends TestCase {
     assertTrue(true);
   }
 
-  public void xtestEmpty() {
+  public void testEmpty() {
     Parser parser = new Parser(Paths.get("samples/empty.mt"));
     Program program = parser.parse();
     assertNull(program);
   }
 
-  public void xtestIntro() {
+  public void testIntro() {
     Program expectedAst = 
       new Program(
           new LetCommand(
@@ -79,7 +79,7 @@ public class ParserTest extends TestCase {
     assertEquals(expectedAst, program);
   }
 
-  public void xtestFactorial() {
+  public void testFactorial() {
     Program expectedAst = 
       new Program(
           new LetCommand(
@@ -172,7 +172,7 @@ public class ParserTest extends TestCase {
     assertEquals(expectedAst, program);
   }
 
-  public void xtestScopeGiven() {
+  public void testScopeGiven() {
     Program expectedAst = 
       new Program(
           new LetCommand(
@@ -194,7 +194,7 @@ public class ParserTest extends TestCase {
     assertEquals(expectedAst, program);
   }
 
-  public void xtestPrecedence() {
+  public void testPrecedence() {
     Program expectedAst = 
       new Program(
           new LetCommand(
