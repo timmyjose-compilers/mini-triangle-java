@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class ConstDeclaration extends Declaration {
   public Identifier I;
@@ -18,6 +19,11 @@ public class ConstDeclaration extends Declaration {
     super(null);
     this.I = I;
     this.E = E;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

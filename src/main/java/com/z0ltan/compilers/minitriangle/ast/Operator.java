@@ -3,14 +3,23 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class Operator extends Terminal {
+  public OperatorDeclaration decl;
+
   public Operator(String spelling, SourcePosition sourcePosition) {
     super(spelling, sourcePosition);
+    this.decl = null;
   }
 
   public Operator(String spelling) {
     super(spelling, null);
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

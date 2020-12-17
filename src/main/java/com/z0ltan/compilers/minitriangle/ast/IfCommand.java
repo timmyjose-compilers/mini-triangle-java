@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class IfCommand extends Command {
   public Expression E;
@@ -21,6 +22,11 @@ public class IfCommand extends Command {
     this.E = E;
     this.C1 = C1;
     this.C2 = C2;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class IntegerLiteral extends Terminal {
   public IntegerLiteral(String spelling, SourcePosition sourcePosition) {
@@ -13,6 +14,11 @@ public class IntegerLiteral extends Terminal {
     super(spelling, null);
   }
 
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
+  }
+ 
   @Override
   public boolean equals(Object o) {
     if (o == null || !(o instanceof IntegerLiteral)) {

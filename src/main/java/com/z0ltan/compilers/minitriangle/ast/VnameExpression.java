@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class VnameExpression extends Expression {
   public Vname V;
@@ -15,6 +16,11 @@ public class VnameExpression extends Expression {
   public VnameExpression(Vname V) {
     super(null);
     this.V = V;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

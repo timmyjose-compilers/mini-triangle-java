@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class SequentialDeclaration extends Declaration {
   public Declaration D1;
@@ -19,6 +20,12 @@ public class SequentialDeclaration extends Declaration {
     this.D1 = D1;
     this.D2 = D2;
   }
+  
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, null);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || !(o instanceof SequentialDeclaration)) {

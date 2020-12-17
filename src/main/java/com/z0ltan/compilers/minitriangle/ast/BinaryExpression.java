@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class BinaryExpression extends Expression {
   public Expression E1;
@@ -21,6 +22,11 @@ public class BinaryExpression extends Expression {
     this.E1 = E1;
     this.O = O;
     this.E2 = E2;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

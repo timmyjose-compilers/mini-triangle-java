@@ -2,6 +2,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class SequentialParam extends Param {
   public Param P1;
@@ -17,6 +18,11 @@ public class SequentialParam extends Param {
     super(null);
     this.P1 = P1;
     this.P2 = P2;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

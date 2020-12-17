@@ -2,6 +2,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class CallExpression extends Expression {
   public Vname V;
@@ -17,6 +18,11 @@ public class CallExpression extends Expression {
     super(null);
     this.V = V;
     this.A = A;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

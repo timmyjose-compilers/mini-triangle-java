@@ -2,8 +2,8 @@ package com.z0ltan.compilers.minitriangle.scanner;
 
 public class SourcePosition {
   public static class Position {
-    int line;
-    int column;
+    public int line;
+    public int column;
 
     public Position(int line, int column) {
       this.line = line;

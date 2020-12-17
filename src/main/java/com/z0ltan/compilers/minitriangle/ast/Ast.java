@@ -1,6 +1,7 @@
 package com.z0ltan.compilers.minitriangle.ast;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public abstract class Ast {
   public SourcePosition sourcePosition;
@@ -8,4 +9,6 @@ public abstract class Ast {
   public Ast(SourcePosition sourcePosition) {
     this.sourcePosition = sourcePosition;
   }
+
+  public abstract Object accept(Visitor visitor, Object arg);
 }

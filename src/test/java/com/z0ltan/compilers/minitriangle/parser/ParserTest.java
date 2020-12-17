@@ -50,10 +50,6 @@ public class ParserTest extends TestCase {
     return new TestSuite(ParserTest.class);
   }
 
-  public void testParser() {
-    assertTrue(true);
-  }
-
   public void testEmpty() {
     Parser parser = new Parser(Paths.get("samples/empty.mt"));
     Program program = parser.parse();

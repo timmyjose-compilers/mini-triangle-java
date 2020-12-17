@@ -2,6 +2,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 
 import java.util.Objects;
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class FormalParam extends Param {
   public Identifier I;
@@ -17,6 +18,11 @@ public class FormalParam extends Param {
     super(null);
     this.I = I;
     this.T = T;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
+import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class IntegerExpression extends Expression {
   public IntegerLiteral I;
@@ -15,6 +16,11 @@ public class IntegerExpression extends Expression {
   public IntegerExpression(IntegerLiteral I) {
     super(null);
     this.I = I;
+  }
+
+  @Override
+  public Object accept(Visitor visitor, Object arg) {
+    return visitor.visit(this, arg);
   }
 
   @Override
