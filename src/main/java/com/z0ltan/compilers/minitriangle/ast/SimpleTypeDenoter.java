@@ -40,6 +40,6 @@ public class SimpleTypeDenoter extends TypeDenoter {
 
   @Override
   public String toString() {
-    return "SimpleTypeDenoter { I = " + this.I + " }";
+    return "SimpleTypeDenoter { I = " + this.I +  ", type = " + this.type + " }";
   }
 }

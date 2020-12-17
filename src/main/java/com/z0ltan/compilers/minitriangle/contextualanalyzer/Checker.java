@@ -11,9 +11,11 @@ import com.z0ltan.compilers.minitriangle.ast.FormalParam;
 import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
 import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
+import com.z0ltan.compilers.minitriangle.ast.Declaration;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.OperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.BinaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
@@ -36,9 +38,6 @@ public class Checker implements Visitor {
 
   public Checker() {
     this.idTable = new IdentificationTable();
-  }
-
-  private void populateStandardEnvironment() {
   }
 
   @Override
@@ -69,6 +68,9 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(CallCommand cmd, Object arg) {
+    cmd.I.accept(this, null);
+    cmd.E.accept(this, null);
+
     return null;
   }
 
@@ -143,12 +145,16 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(IntegerExpression expr, Object arg) {
-    return null;
+    expr.type = Types.INT;
+    return expr.type;
   }
 
   @Override
   public Object visit(VnameExpression expr, Object arg) {
-    return null;
+    Type vType = (Type) expr.V.accept(this, null);
+    expr.type = vType;
+
+    return expr.type;
   }
 
   @Override
@@ -158,7 +164,36 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(BinaryExpression expr, Object arg) {
-    return null;
+    Type e1Type = (Type) expr.E1.accept(this, null);
+    Type e2Type = (Type) expr.E2.accept(this, null);
+
+    OperatorDeclaration opdecl = (OperatorDeclaration)expr.O.accept(this, null);
+    if (opdecl == null) {
+      ErrorReporter.report("no such operator - " + "\"" + expr.O.spelling +  "\"",
+          expr.sourcePosition.start.line,
+          expr.sourcePosition.start.column);
+    } else if (opdecl instanceof BinaryOperatorDeclaration) {
+      BinaryOperatorDeclaration binopdecl = (BinaryOperatorDeclaration)opdecl;
+      if (!e1Type.equals(binopdecl.Operand1Type)) {
+        ErrorReporter.report("the left hand side of the binary expression has the wrong type - " + "\"" + e1Type + "\"",
+            expr.sourcePosition.start.line,
+            expr.sourcePosition.start.column);
+      }
+
+      if (!e2Type.equals(binopdecl.Operand2Type)) {
+        ErrorReporter.report("the right hand side of the binary expression has the wrong type - " + "\"" + e2Type + "\"",
+            expr.sourcePosition.start.line,
+            expr.sourcePosition.start.column);
+      }
+
+      expr.type = binopdecl.ResultType;
+    } else {
+      ErrorReporter.report("\"" + expr.O.spelling + "\"" + " is not a binary operator",
+          expr.sourcePosition.start.line,
+          expr.sourcePosition.start.column);
+    }
+
+    return expr.type;
   }
 
   @Override 
@@ -168,11 +203,17 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(ConstDeclaration decl, Object arg) {
+    decl.E.accept(this, null);
+    idTable.enter(decl.I.spelling, decl);
+
     return null;
   }
 
   @Override
   public Object visit(VarDeclaration decl, Object arg) {
+    decl.T.accept(this, null);
+    idTable.enter(decl.I.spelling, decl);
+
     return null;
   }
 
@@ -193,27 +234,77 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(SequentialDeclaration decl, Object arg) {
+    decl.D1.accept(this, null);
+    decl.D2.accept(this, null);
+
     return null;
   }
 
   @Override
   public Object visit(SimpleTypeDenoter td, Object arg) {
-    return null;
+    switch (td.I.spelling) {
+      case "Boolean":
+        td.type = Types.BOOL;
+        break;
+
+      case "Integer":
+        td.type = Types.INT;
+        break;
+
+      default:
+        ErrorReporter.report("unknown simple type \"" + td.I.spelling + "\"",
+            td.sourcePosition.start.line,
+            td.sourcePosition.start.column);
+    }
+
+    return td.type;
   }
 
   @Override
   public Object visit(SimpleVname vname, Object arg) {
-    return null;
+    Declaration decl = (Declaration) vname.I.accept(this, null);
+    
+    if (decl == null) {
+      ErrorReporter.report("\"" + vname.I.spelling + "\" is undeclared",
+          vname.sourcePosition.start.line,
+          vname.sourcePosition.start.column);
+    }
+
+    if (decl instanceof ConstDeclaration) {
+      vname.type = ((ConstDeclaration) decl).E.type;
+      vname.variable = false;
+    } else if (decl instanceof VarDeclaration) {
+      vname.type = ((VarDeclaration) decl).T.type;
+      vname.variable = true;
+    } else if (decl instanceof FunctionDeclaration) {
+      ErrorReporter.report("\"" + vname.I.spelling + "\"" + " is declared as a function - you cannot assign to a function",
+          vname.sourcePosition.start.line,
+          vname.sourcePosition.start.column);
+    } else if (decl instanceof OperatorDeclaration) {
+      ErrorReporter.report("\"" + vname.I.spelling + "\"" + " is declared as an operator - you cannot assign to an operator",
+          vname.sourcePosition.start.line,
+          vname.sourcePosition.start.column);
+    }
+
+    return vname.type;
   }
 
   @Override
   public Object visit(Identifier id, Object arg) {
-    return null;
+    id.decl = idTable.retrieve(id.spelling);
+    return id.decl;
   }
 
   @Override
   public Object visit(Operator op, Object arg) {
-    return null;
+    Declaration decl = idTable.retrieve(op.spelling);
+    if (!(decl instanceof OperatorDeclaration)) {
+      op.decl = null;
+    } else {
+      op.decl = (OperatorDeclaration)decl;
+    }
+
+    return op.decl;
   }
 
   @Override
@@ -227,7 +318,7 @@ public class Checker implements Visitor {
     }
 
     idTable.openScope();
-    populateStandardEnvironment();
+    StandardEnvironment.load(idTable);
     visit(program, null);
     idTable.closeScope();
   }

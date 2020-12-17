@@ -48,4 +48,21 @@ public class IdentificationTable {
     }
     currentLevel--;
   }
+
+  public void display() {
+    int level = currentLevel;
+
+    while (level >= 0) {
+      System.out.println("Level " + level);
+
+      if (idTable.get(level) == null) {
+        System.out.println("No entries for level " + level);
+      } else {
+        for (Map.Entry<String, Declaration> entry : idTable.get(level).entrySet()) {
+          System.out.printf("%s => %s\n", entry.getKey(), entry.getValue());
+        }
+      }
+      level--;
+    }
+  }
 }

@@ -40,6 +40,6 @@ public class SimpleVname extends Vname {
 
   @Override
   public String toString() {
-    return "SimpleVname { I = " + this.I + " }";
+    return "SimpleVname { I = " + this.I + ", type = " + this.type + ", variable = " + this.variable + " }";
   }
 }

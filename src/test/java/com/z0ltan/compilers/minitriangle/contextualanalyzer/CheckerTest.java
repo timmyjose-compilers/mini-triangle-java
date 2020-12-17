@@ -60,6 +60,11 @@ public class CheckerTest extends TestCase {
   }
 
   public void testIntro() {
+    Parser parser = new Parser(Paths.get("samples/intro.mt"));
+    Program program = parser.parse();
+    Checker checker = new Checker();
+    checker.check(program);
+    System.out.println(program);
   }
 
   public void testFactorial() {
