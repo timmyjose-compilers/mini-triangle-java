@@ -23,7 +23,7 @@ public class SequentialDeclaration extends Declaration {
   
   @Override
   public Object accept(Visitor visitor, Object arg) {
-    return visitor.visit(this, null);
+    return visitor.visit(this, arg);
   }
 
   @Override

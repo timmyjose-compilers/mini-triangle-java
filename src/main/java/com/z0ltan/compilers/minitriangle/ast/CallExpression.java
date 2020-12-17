@@ -42,7 +42,7 @@ public class CallExpression extends Expression {
 
   @Override
   public String toString() {
-    return "CallExpression { V = " + this.V + ", A = " + this.A + " }";
+    return "CallExpression { V = " + this.V + ", A = " + this.A + ", type = " + this.type + " }";
   }
 }
 

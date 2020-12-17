@@ -40,6 +40,6 @@ public class VnameExpression extends Expression {
 
   @Override
   public String toString() {
-    return "VnameExpression { V = " + this.V + " }";
+    return "VnameExpression { V = " + this.V + ", type = " + this.type + " }";
   }
 }

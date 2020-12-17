@@ -201,7 +201,3 @@ A declaration D is elaborated to produce bindings. It may also have the side-eff
     deallocated upon exit from the block.
   - A SequentialDeclaration D1 ; D2 is elaborated as follows: elaborate D1 producing bindings b1, and then elaborate D2 producing bindings b2 in the environment overlaid by b1.
 
-## Specific Contextual Analysis Rules
-
-Assuming a visitor-pattern approach:
-

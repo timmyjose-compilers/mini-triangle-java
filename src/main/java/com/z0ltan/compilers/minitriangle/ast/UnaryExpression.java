@@ -43,6 +43,6 @@ public class UnaryExpression extends Expression {
 
   @Override
   public String toString() {
-    return "UnaryExpression { O = " + this.O + ", E = " + this.E + " }";
+    return "UnaryExpression { O = " + this.O + ", E = " + this.E + ", type = " + this.type + " }";
   }
 }

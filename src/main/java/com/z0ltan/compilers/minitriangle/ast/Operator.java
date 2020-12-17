@@ -39,6 +39,6 @@ public class Operator extends Terminal {
 
   @Override
   public String toString() {
-    return "Operator { spelling = " + this.spelling + " }";
+    return "Operator { spelling = " + this.spelling + ", decl = " + this.decl + " }";
   }
 }

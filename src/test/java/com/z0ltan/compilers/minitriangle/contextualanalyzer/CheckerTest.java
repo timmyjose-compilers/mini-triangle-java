@@ -54,22 +54,35 @@ public class CheckerTest extends TestCase {
   public void testEmpty() {
     Parser parser = new Parser(Paths.get("samples/empty.mt"));
     Program program = parser.parse();
+
     Checker checker = new Checker();
     checker.check(program);
-    assertNull(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 
   public void testIntro() {
     Parser parser = new Parser(Paths.get("samples/intro.mt"));
     Program program = parser.parse();
+
     Checker checker = new Checker();
     checker.check(program);
-    System.out.println(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 
-  public void testFactorial() {
-  }
+  public void xtestFactorial() {
+    Parser parser = new Parser(Paths.get("samples/factorial.mt"));
+    Program program = parser.parse();
 
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
+  }
 
   public void testFunction() {
   }

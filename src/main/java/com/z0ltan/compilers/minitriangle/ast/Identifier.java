@@ -39,7 +39,7 @@ public class Identifier extends Terminal {
 
   @Override
   public String toString() {
-    return "Identifier { spelling = " + this.spelling + " }";
+    return "Identifier { spelling = " + this.spelling + ", decl = " + this.decl + " }";
   }
 }
 

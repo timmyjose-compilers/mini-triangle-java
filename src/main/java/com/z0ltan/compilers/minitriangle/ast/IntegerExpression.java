@@ -40,6 +40,6 @@ public class IntegerExpression extends Expression {
 
   @Override
   public String toString() {
-    return "IntegerExpression { I = " + this.I + " }";
+    return "IntegerExpression { I = " + this.I + ", type = " + this.type + " }";
   }
 }

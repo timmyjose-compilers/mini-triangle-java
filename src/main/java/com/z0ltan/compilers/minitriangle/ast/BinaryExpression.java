@@ -46,6 +46,6 @@ public class BinaryExpression extends Expression {
 
   @Override
   public String toString() {
-    return "BinaryExpression { E1 = " + this.E1 + ", O = " + this.O + ", E2 = " + this.E2 + " }";
+    return "BinaryExpression { E1 = " + this.E1 + ", O = " + this.O + ", E2 = " + this.E2 + ", type = " + this.type + " }";
   }
 }
