@@ -222,6 +222,10 @@ public class Checker implements Visitor {
   }
 
   public void check(Program program) {
+    if (program == null) {
+      return;
+    }
+
     idTable.openScope();
     populateStandardEnvironment();
     visit(program, null);

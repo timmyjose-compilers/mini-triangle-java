@@ -1,4 +1,4 @@
-package com.z0ltan.compilers.minitriangle.parser;
+package com.z0ltan.compilers.minitriangle.contextualanalyzer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 
 import java.nio.file.Paths;
 
+import com.z0ltan.compilers.minitriangle.parser.Parser;
 import com.z0ltan.compilers.minitriangle.ast.Program;
 import com.z0ltan.compilers.minitriangle.ast.Command;
 import com.z0ltan.compilers.minitriangle.ast.AssignCommand;
@@ -52,7 +53,7 @@ public class CheckerTest extends TestCase {
 
   public void testEmpty() {
     Parser parser = new Parser(Paths.get("samples/empty.mt"));
-    Program program = parser().parse();
+    Program program = parser.parse();
     Checker checker = new Checker();
     checker.check(program);
     assertNull(program);
