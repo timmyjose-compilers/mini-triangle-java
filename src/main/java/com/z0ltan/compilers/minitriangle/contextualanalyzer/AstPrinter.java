@@ -7,8 +7,8 @@ import com.z0ltan.compilers.minitriangle.ast.IfCommand;
 import com.z0ltan.compilers.minitriangle.ast.LetCommand;
 import com.z0ltan.compilers.minitriangle.ast.WhileCommand;
 import com.z0ltan.compilers.minitriangle.ast.SequentialCommand;
-import com.z0ltan.compilers.minitriangle.ast.FormalParam;
-import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.FormalParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.SequentialParamDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
@@ -158,9 +158,9 @@ public class AstPrinter implements Visitor {
   }
 
   @Override
-  public Object visit(FormalParam param, Object arg) {
+  public Object visit(FormalParamDeclaration param, Object arg) {
     int startPos = (int)arg;
-    String header = "FormalParam {";
+    String header = "FormalParamDeclaration {";
     String field1 = "I = ";
     String field2 = ", T = ";
 
@@ -176,9 +176,9 @@ public class AstPrinter implements Visitor {
   }
 
   @Override
-  public Object visit(SequentialParam param, Object arg) {
+  public Object visit(SequentialParamDeclaration param, Object arg) {
     int startPos = (int)arg;
-    String header = "SequentialParam {";
+    String header = "SequentialParamDeclaration {";
     String field1 = "P1 = ";
     String field2 = ", P2 = ";
 
@@ -373,6 +373,7 @@ public class AstPrinter implements Visitor {
     printAt(offset, field1);
     expr.V.accept(this, offset);
     printAt(offset, field2);
+    System.out.println("expr = " + expr);
     printWithNewlineAt(0, expr.type.toString());
     printWithNewlineAt(startPos, "}");
 
@@ -390,7 +391,7 @@ public class AstPrinter implements Visitor {
     printWithNewlineAt(0, header);
     int offset = startPos + header.length() / 3;
     printAt(offset, field1);
-    expr.V.accept(this, offset);
+    expr.I.accept(this, offset);
     printAt(offset, field2);
     expr.A.accept(this, offset);
     printAt(offset, field3);

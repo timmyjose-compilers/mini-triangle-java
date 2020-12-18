@@ -4,17 +4,17 @@ import java.util.Objects;
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
-public class FormalParam extends Param {
+public class FormalParamDeclaration extends ParamDeclaration {
   public Identifier I;
   public TypeDenoter T;
 
-  public FormalParam(Identifier I, TypeDenoter T, SourcePosition sourcePosition) {
+  public FormalParamDeclaration(Identifier I, TypeDenoter T, SourcePosition sourcePosition) {
     super(sourcePosition);
     this.I = I;
     this.T = T;
   }
 
-  public FormalParam(Identifier I, TypeDenoter T) {
+  public FormalParamDeclaration(Identifier I, TypeDenoter T) {
     super(null);
     this.I = I;
     this.T = T;
@@ -27,11 +27,11 @@ public class FormalParam extends Param {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || !(o instanceof FormalParam)) {
+    if (o == null || !(o instanceof FormalParamDeclaration)) {
       return false;
     }
 
-    FormalParam other = (FormalParam)o;
+    FormalParamDeclaration other = (FormalParamDeclaration)o;
     return this.I.equals(other.I) && this.T.equals(other.T);
   }
 
@@ -42,6 +42,6 @@ public class FormalParam extends Param {
 
   @Override
   public String toString() {
-    return "FormalParam { I = " + this.I + ", T = " + this.T + " }";
+    return "FormalParamDeclaration { I = " + this.I + ", T = " + this.T + " }";
   }
 }

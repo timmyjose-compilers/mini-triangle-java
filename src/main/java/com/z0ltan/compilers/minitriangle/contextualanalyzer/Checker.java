@@ -7,8 +7,9 @@ import com.z0ltan.compilers.minitriangle.ast.IfCommand;
 import com.z0ltan.compilers.minitriangle.ast.LetCommand;
 import com.z0ltan.compilers.minitriangle.ast.WhileCommand;
 import com.z0ltan.compilers.minitriangle.ast.SequentialCommand;
-import com.z0ltan.compilers.minitriangle.ast.FormalParam;
-import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.ParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.FormalParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.SequentialParamDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.Declaration;
@@ -52,13 +53,13 @@ public class Checker implements Visitor {
     Type eType = (Type) cmd.E.accept(this, null);
 
     if (!cmd.V.variable) {
-      ErrorReporter.report("The left side of an assignment command must be a variable",
+      ErrorReporter.reportWithNoExit("The left side of an assignment command must be a variable",
           cmd.sourcePosition.start.line,
           cmd.sourcePosition.start.column);
     }
 
     if (!vType.equals(eType)) {
-      ErrorReporter.report("Both sides of an assignment command must have the same type",
+      ErrorReporter.reportWithNoExit("Both sides of an assignment command must have the same type",
           cmd.sourcePosition.start.line,
           cmd.sourcePosition.start.column);
     }
@@ -79,7 +80,7 @@ public class Checker implements Visitor {
     Type eType = (Type) cmd.E.accept(this, null);
 
     if (!eType.equals(Types.BOOL)) {
-      ErrorReporter.report("the condition of an if command must be a boolean expression, not a " + eType,
+      ErrorReporter.reportWithNoExit("the condition of an if command must be a boolean expression, not a " + eType,
           cmd.sourcePosition.start.line,
           cmd.sourcePosition.start.column);
     }
@@ -105,7 +106,7 @@ public class Checker implements Visitor {
     Type eType = (Type) cmd.E.accept(this, null);
 
     if (!eType.equals(Types.BOOL)) {
-      ErrorReporter.report("the condiiton of a while command must be a boolean, not a " + eType,
+      ErrorReporter.reportWithNoExit("the condiiton of a while command must be a boolean, not a " + eType,
           cmd.sourcePosition.start.line,
           cmd.sourcePosition.start.column);
     }
@@ -124,22 +125,56 @@ public class Checker implements Visitor {
   }
 
   @Override
-  public Object visit(FormalParam param, Object arg) {
+  public Object visit(FormalParamDeclaration param, Object arg) {
+    param.T.accept(this, null);
+    idTable.enter(param.I.spelling, param);
+
     return null;
   }
 
   @Override
-  public Object visit(SequentialParam param, Object arg) {
+  public Object visit(SequentialParamDeclaration param, Object arg) {
+    param.P1.accept(this, arg);
+    param.P2.accept(this, arg);
+
     return null;
   }
 
   @Override
   public Object visit(CallArgument callarg, Object arg) {
+    ParamDeclaration decl = (ParamDeclaration)arg;
+
+    if (!(decl instanceof FormalParamDeclaration)) {
+      ErrorReporter.report("expected a single argument, got multiple arguments in function call",
+          callarg.sourcePosition.start.line,
+          callarg.sourcePosition.start.column);
+    } else {
+      FormalParamDeclaration formalParamDecl = (FormalParamDeclaration)decl;
+      Type argType = (Type)callarg.E.accept(this, null);
+      if (!argType.equals(formalParamDecl.T.type)) {
+        ErrorReporter.report("type mismatch in function call - expected " + argType.toString() +
+            ", got " + formalParamDecl.T.type,
+            callarg.sourcePosition.start.line,
+            callarg.sourcePosition.start.column);
+      }
+    }
+
     return null;
   }
 
   @Override
   public Object visit(SequentialArgument callarg, Object arg) {
+    ParamDeclaration decl = (ParamDeclaration)arg;
+    if (!(decl instanceof SequentialParamDeclaration)) {
+      ErrorReporter.report("function call declaration and invocation have different number of parameters",
+          callarg.sourcePosition.start.line,
+          callarg.sourcePosition.start.column);
+    } else {
+      SequentialParamDeclaration seqParamDecl = (SequentialParamDeclaration)decl;
+      callarg.A1.accept(this, seqParamDecl.P1);
+      callarg.A2.accept(this, seqParamDecl.P2);
+    }
+
     return null;
   }
 
@@ -159,7 +194,32 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(UnaryExpression expr, Object arg) {
-    return null;
+    Type eType = (Type)expr.E.accept(this, null);
+
+    OperatorDeclaration opdecl = (OperatorDeclaration)expr.O.accept(this, null);
+    if (opdecl == null) {
+      ErrorReporter.reportWithNoExit("no such operator - \"" + expr.O.spelling +  "\"",
+          expr.sourcePosition.start.line,
+          expr.sourcePosition.start.column);
+      expr.type = Types.ERROR;
+    } else if (opdecl instanceof UnaryOperatorDeclaration) {
+      UnaryOperatorDeclaration unopdecl = (UnaryOperatorDeclaration)opdecl;
+      if (!eType.equals(unopdecl.OperandType)) {
+        ErrorReporter.reportWithNoExit("\"" + eType.toString() + "\" is not a supported type for unary expressions",
+            expr.sourcePosition.start.line,
+            expr.sourcePosition.start.column);
+        expr.type = Types.ERROR;
+        return expr.type;
+      } 
+      expr.type = unopdecl.ResultType;
+    } else {
+      ErrorReporter.reportWithNoExit("unsupported operator for unary expression - " + "\"" + expr.O.spelling + "\"",
+          expr.sourcePosition.start.line,
+          expr.sourcePosition.start.column);
+      expr.type = Types.ERROR;
+    }
+
+    return expr.type;
   }
 
   @Override
@@ -176,22 +236,27 @@ public class Checker implements Visitor {
     } else if (opdecl instanceof BinaryOperatorDeclaration) {
       BinaryOperatorDeclaration binopdecl = (BinaryOperatorDeclaration)opdecl;
       if (!e1Type.equals(binopdecl.Operand1Type)) {
-        ErrorReporter.report("the left hand side of the binary expression has the wrong type - " + "\"" + e1Type + "\"",
+        ErrorReporter.reportWithNoExit("the left hand side of the binary expression has the wrong type - " + "\"" + e1Type + "\"",
             expr.sourcePosition.start.line,
             expr.sourcePosition.start.column);
+        expr.type = Types.ERROR;
+        return expr.type;
       }
 
       if (!e2Type.equals(binopdecl.Operand2Type)) {
-        ErrorReporter.report("the right hand side of the binary expression has the wrong type - " + "\"" + e2Type + "\"",
+        ErrorReporter.reportWithNoExit("the right hand side of the binary expression has the wrong type - " + "\"" + e2Type + "\"",
             expr.sourcePosition.start.line,
             expr.sourcePosition.start.column);
+        expr.type = Types.ERROR;
+        return expr.type;
       }
 
       expr.type = binopdecl.ResultType;
     } else {
-      ErrorReporter.report("\"" + expr.O.spelling + "\"" + " is not a binary operator",
+      ErrorReporter.reportWithNoExit("\"" + expr.O.spelling + "\"" + " is not a binary operator",
           expr.sourcePosition.start.line,
           expr.sourcePosition.start.column);
+      expr.type = Types.ERROR;
     }
 
     return expr.type;
@@ -199,7 +264,25 @@ public class Checker implements Visitor {
 
   @Override 
   public Object visit(CallExpression expr, Object arg) {
-    return null;
+    Declaration decl = (Declaration)expr.I.accept(this, null);
+
+    if (decl == null) {
+      ErrorReporter.reportWithNoExit("\"" + expr.I.spelling + "\" is undeclared",
+          expr.sourcePosition.start.line,
+          expr.sourcePosition.start.column);
+      expr.type = Types.ERROR;
+    } else if (decl instanceof FunctionDeclaration) {
+      FunctionDeclaration funcDecl = (FunctionDeclaration)decl;
+      expr.A.accept(this, funcDecl.P);
+      expr.type = funcDecl.T.type;
+    } else {
+      ErrorReporter.reportWithNoExit("\"" + decl + "\" was not expected in a call expression",
+          expr.sourcePosition.start.line,
+          expr.sourcePosition.start.column);
+      expr.type = Types.ERROR;
+    }
+
+    return expr.type;
   }
 
   @Override
@@ -220,16 +303,34 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(UnaryOperatorDeclaration decl, Object arg) {
+    // this is done as part of loading the standard environment
+    // this is a place-holder for custom operators, if supported
     return null;
   }
 
   @Override
   public Object visit(BinaryOperatorDeclaration decl, Object arg) {
+    // this is done as part of loading the standard environment
+    // this is a place-holder for custom operators, if supported
     return null;
   }
 
   @Override
   public Object visit(FunctionDeclaration decl, Object arg) {
+    Type tdType = (Type)decl.T.accept(this, null);
+    idTable.enter(decl.I.spelling, decl);
+    idTable.openScope();
+    decl.P.accept(this, decl);
+    idTable.closeScope();
+    Type eType = (Type)decl.E.accept(this, null);
+
+    if (!eType.equals(tdType)) {
+      ErrorReporter.reportWithNoExit("function's declared type \"" + tdType.toString() + 
+          "\" does not match the actual type \"" + eType.toString() + "\"",
+          decl.sourcePosition.start.line,
+          decl.sourcePosition.start.column);
+    }
+
     return null;
   }
 
@@ -253,7 +354,7 @@ public class Checker implements Visitor {
         break;
 
       default:
-        ErrorReporter.report("unknown simple type \"" + td.I.spelling + "\"",
+        ErrorReporter.reportWithNoExit("unknown simple type \"" + td.I.spelling + "\"",
             td.sourcePosition.start.line,
             td.sourcePosition.start.column);
     }
@@ -264,9 +365,9 @@ public class Checker implements Visitor {
   @Override
   public Object visit(SimpleVname vname, Object arg) {
     Declaration decl = (Declaration) vname.I.accept(this, null);
-    
+
     if (decl == null) {
-      ErrorReporter.report("\"" + vname.I.spelling + "\" is undeclared",
+      ErrorReporter.reportWithNoExit("\"" + vname.I.spelling + "\" is undeclared",
           vname.sourcePosition.start.line,
           vname.sourcePosition.start.column);
     }
@@ -277,21 +378,24 @@ public class Checker implements Visitor {
     } else if (decl instanceof VarDeclaration) {
       vname.type = ((VarDeclaration) decl).T.type;
       vname.variable = true;
-    } else if (decl instanceof FunctionDeclaration) {
-      ErrorReporter.report("\"" + vname.I.spelling + "\"" + " is declared as a function - you cannot assign to a function",
-          vname.sourcePosition.start.line,
-          vname.sourcePosition.start.column);
+    } else if (decl instanceof FormalParamDeclaration) {
+      vname.type = ((FormalParamDeclaration)decl).T.type;
+      vname.variable = false;
+    }  else if (decl instanceof FunctionDeclaration) {
+      vname.type = ((FunctionDeclaration) decl).T.type;
+      vname.variable = false;
     } else if (decl instanceof OperatorDeclaration) {
-      ErrorReporter.report("\"" + vname.I.spelling + "\"" + " is declared as an operator - you cannot assign to an operator",
+      ErrorReporter.reportWithNoExit("\"" + vname.I.spelling + "\"" + " is declared as an operator - you cannot assign to an operator",
           vname.sourcePosition.start.line,
           vname.sourcePosition.start.column);
-    }
+    } 
 
     return vname.type;
   }
 
   @Override
   public Object visit(Identifier id, Object arg) {
+    System.out.println("in visit(Identifier), id = " + id);
     id.decl = idTable.retrieve(id.spelling);
     return id.decl;
   }

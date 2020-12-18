@@ -5,18 +5,18 @@ import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class CallExpression extends Expression {
-  public Vname V;
+  public Identifier I;
   public Argument A;
 
-  public CallExpression(Vname V, Argument A, SourcePosition sourcePosition) {
+  public CallExpression(Identifier I, Argument A, SourcePosition sourcePosition) {
     super(sourcePosition);
-    this.V = V;
+    this.I = I;
     this.A = A;
   }
 
-  public CallExpression(Vname V, Argument A) {
+  public CallExpression(Identifier I, Argument A) {
     super(null);
-    this.V = V;
+    this.I = I;
     this.A = A;
   }
 
@@ -32,7 +32,7 @@ public class CallExpression extends Expression {
     }
 
     CallExpression other = (CallExpression)o;
-    return this.V.equals(other.V) && this.A.equals(other.A);
+    return this.I.equals(other.I) && this.A.equals(other.A);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class CallExpression extends Expression {
 
   @Override
   public String toString() {
-    return "CallExpression { V = " + this.V + ", A = " + this.A + ", type = " + this.type + " }";
+    return "CallExpression { I = " + this.I + ", A = " + this.A + ", type = " + this.type + " }";
   }
 }
 

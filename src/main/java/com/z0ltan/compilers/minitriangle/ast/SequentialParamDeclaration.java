@@ -4,17 +4,17 @@ import java.util.Objects;
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
-public class SequentialParam extends Param {
-  public Param P1;
-  public Param P2;
+public class SequentialParamDeclaration extends ParamDeclaration {
+  public ParamDeclaration P1;
+  public ParamDeclaration P2;
 
-  public SequentialParam(Param P1, Param P2, SourcePosition sourcePosition) {
+  public SequentialParamDeclaration(ParamDeclaration P1, ParamDeclaration P2, SourcePosition sourcePosition) {
     super(sourcePosition);
     this.P1 = P1;
     this.P2 = P2;
   }
 
-  public SequentialParam(Param P1, Param P2) {
+  public SequentialParamDeclaration(ParamDeclaration P1, ParamDeclaration P2) {
     super(null);
     this.P1 = P1;
     this.P2 = P2;
@@ -27,11 +27,11 @@ public class SequentialParam extends Param {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || !(o instanceof SequentialParam)) {
+    if (o == null || !(o instanceof SequentialParamDeclaration)) {
       return false;
     }
 
-    SequentialParam other = (SequentialParam)o;
+    SequentialParamDeclaration other = (SequentialParamDeclaration)o;
     return this.P1.equals(other.P1) && this.P2.equals(other.P2);
   }
 
@@ -42,6 +42,6 @@ public class SequentialParam extends Param {
 
   @Override
   public String toString() {
-    return "SequentialParam { P1 = " + this.P1 + ", P2 = " + this.P2 + " }";
+    return "SequentialParamDeclaration { P1 = " + this.P1 + ", P2 = " + this.P2 + " }";
   }
 }

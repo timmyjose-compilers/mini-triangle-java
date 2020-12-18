@@ -30,9 +30,9 @@ import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.BinaryExpression;
-import com.z0ltan.compilers.minitriangle.ast.Param;
-import com.z0ltan.compilers.minitriangle.ast.FormalParam;
-import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.ParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.FormalParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.SequentialParamDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.Argument;
 import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
@@ -115,9 +115,9 @@ public class ParserTest extends TestCase {
               new VarDeclaration(new Identifier("z"), new SimpleTypeDenoter(new Identifier("Integer")))),
             new FunctionDeclaration(
               new Identifier("foo"), 
-              new SequentialParam(
-                new FormalParam(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
-                new FormalParam(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer")))),
+              new SequentialParamDeclaration(
+                new FormalParamDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                new FormalParamDeclaration(new Identifier("y"), new SimpleTypeDenoter(new Identifier("Integer")))),
               new SimpleTypeDenoter(new Identifier("Integer")),
               new BinaryExpression(
                 new BinaryExpression(
@@ -132,7 +132,7 @@ public class ParserTest extends TestCase {
                 new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("3"))),
                 new AssignCommand(new SimpleVname(new Identifier("y")), new IntegerExpression(new IntegerLiteral("4")))),
               new AssignCommand(new SimpleVname(new Identifier("z")), 
-                new CallExpression(new SimpleVname(new Identifier("foo")), 
+                new CallExpression(new Identifier("foo"), 
                   new SequentialArgument(new CallArgument(new VnameExpression(new SimpleVname(new Identifier("x")))),
                     new CallArgument(new VnameExpression(new SimpleVname(new Identifier("y")))))))),
             new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("z")))))));

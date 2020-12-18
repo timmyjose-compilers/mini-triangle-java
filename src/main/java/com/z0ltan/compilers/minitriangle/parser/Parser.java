@@ -29,9 +29,9 @@ import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.UnaryExpression;
 import com.z0ltan.compilers.minitriangle.ast.BinaryExpression;
-import com.z0ltan.compilers.minitriangle.ast.Param;
-import com.z0ltan.compilers.minitriangle.ast.FormalParam;
-import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.ParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.FormalParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.SequentialParamDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.Argument;
 import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
@@ -221,16 +221,16 @@ public class Parser {
 
       case IDENTIFIER:
         {
-          Vname vname = parseVname();
+          Identifier id = parseIdentifier();
           if (currentToken.kind == TokenType.LEFT_PAREN) {
             acceptIt();
             Argument args = parseArgument();
             accept(TokenType.RIGHT_PAREN);
             finish(exprPos);
-            expr = new CallExpression(vname, args, exprPos);
+            expr = new CallExpression(id, args, exprPos);
           } else {
             finish(exprPos);
-            expr = new VnameExpression(vname, exprPos);
+            expr = new VnameExpression(new SimpleVname(id), exprPos);
           }
         }
         break;
@@ -359,12 +359,12 @@ public class Parser {
           acceptIt();
           Identifier id = parseIdentifier();
           accept(TokenType.LEFT_PAREN);
-          Param p = null;
+          ParamDeclaration p = null;
 
           if (currentToken.kind == TokenType.RIGHT_PAREN) {
             acceptIt();
           } else {
-            p = parseParam();
+            p = parseParamDeclaration();
           }
           accept(TokenType.RIGHT_PAREN);
           accept(TokenType.COLON);
@@ -386,30 +386,30 @@ public class Parser {
   }
 
   // param ::= formal-Param ("," formal-Param)*
-  private Param parseParam() {
+  private ParamDeclaration parseParamDeclaration() {
     SourcePosition pPos = new SourcePosition();
     start(pPos);
-    Param p1 = parseFormalParam();
+    ParamDeclaration p1 = parseFormalParamDeclaration();
 
     while (currentToken.kind == TokenType.COMMA) {
       acceptIt();
-      Param p2 = parseFormalParam();
+      ParamDeclaration p2 = parseFormalParamDeclaration();
       finish(pPos);
-      p1 = new SequentialParam(p1, p2, pPos);
+      p1 = new SequentialParamDeclaration(p1, p2, pPos);
     }
 
     return p1;
   }
 
-  // formal-Param ::= Identifier ":" Type-denoter
-  private Param parseFormalParam() {
+  // formal-param-declaration ::= Identifier ":" Type-denoter
+  private ParamDeclaration parseFormalParamDeclaration() {
     SourcePosition fpPos = new SourcePosition();
     start(fpPos);
     Identifier id = parseIdentifier();
     accept(TokenType.COLON);
     TypeDenoter td = parseTypeDenoter();
     finish(fpPos);
-    FormalParam fp = new FormalParam(id, td);
+    FormalParamDeclaration fp = new FormalParamDeclaration(id, td);
 
     return fp;
   }

@@ -31,9 +31,9 @@ import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.BinaryExpression;
-import com.z0ltan.compilers.minitriangle.ast.Param;
-import com.z0ltan.compilers.minitriangle.ast.FormalParam;
-import com.z0ltan.compilers.minitriangle.ast.SequentialParam;
+import com.z0ltan.compilers.minitriangle.ast.ParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.FormalParamDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.SequentialParamDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.Argument;
 import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
@@ -73,7 +73,7 @@ public class CheckerTest extends TestCase {
     printer.print(program);
   }
 
-  public void xtestFactorial() {
+  public void testFactorial() {
     Parser parser = new Parser(Paths.get("samples/factorial.mt"));
     Program program = parser.parse();
 
@@ -81,10 +81,19 @@ public class CheckerTest extends TestCase {
     checker.check(program);
 
     AstPrinter printer = new AstPrinter();
-    //printer.print(program);
+    printer.print(program);
   }
 
   public void testFunction() {
+    Parser parser = new Parser(Paths.get("samples/function.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+    System.out.println(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 
   public void testScope() {

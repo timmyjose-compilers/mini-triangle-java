@@ -6,11 +6,11 @@ import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class FunctionDeclaration extends Declaration {
   public Identifier I;
-  public Param P;
+  public ParamDeclaration P;
   public TypeDenoter T;
   public Expression E;
 
-  public FunctionDeclaration(Identifier I, Param P, TypeDenoter T, Expression E, SourcePosition sourcePosition) {
+  public FunctionDeclaration(Identifier I, ParamDeclaration P, TypeDenoter T, Expression E, SourcePosition sourcePosition) {
     super(sourcePosition);
     this.I = I;
     this.P = P;
@@ -18,7 +18,7 @@ public class FunctionDeclaration extends Declaration {
     this.E = E;
   }
 
-  public FunctionDeclaration(Identifier I, Param P, TypeDenoter T, Expression E) {
+  public FunctionDeclaration(Identifier I, ParamDeclaration P, TypeDenoter T, Expression E) {
     super(null);
     this.I = I;
     this.P = P;
