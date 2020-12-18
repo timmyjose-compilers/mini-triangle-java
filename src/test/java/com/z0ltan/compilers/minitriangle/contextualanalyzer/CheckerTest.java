@@ -90,19 +90,42 @@ public class CheckerTest extends TestCase {
 
     Checker checker = new Checker();
     checker.check(program);
-    System.out.println(program);
 
     AstPrinter printer = new AstPrinter();
     printer.print(program);
   }
 
   public void testScope() {
+    Parser parser = new Parser(Paths.get("samples/scope.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 
   public void testScopeGiven() {
+    Parser parser = new Parser(Paths.get("samples/scope_given.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 
   public void testPrecedence() {
+    Parser parser = new Parser(Paths.get("samples/precedence.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 }
 

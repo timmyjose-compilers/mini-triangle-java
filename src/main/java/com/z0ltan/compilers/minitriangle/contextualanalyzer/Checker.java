@@ -395,7 +395,6 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(Identifier id, Object arg) {
-    System.out.println("in visit(Identifier), id = " + id);
     id.decl = idTable.retrieve(id.spelling);
     return id.decl;
   }
