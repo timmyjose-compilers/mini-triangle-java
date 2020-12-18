@@ -81,7 +81,7 @@ public class CheckerTest extends TestCase {
     checker.check(program);
 
     AstPrinter printer = new AstPrinter();
-    printer.print(program);
+    //printer.print(program);
   }
 
   public void testFunction() {

@@ -5,19 +5,19 @@ import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class SequentialArgument extends Argument {
-  public Argument P1;
-  public Argument P2;
+  public Argument A1;
+  public Argument A2;
 
-  public SequentialArgument(Argument P1, Argument P2, SourcePosition sourcePosition) {
+  public SequentialArgument(Argument A1, Argument A2, SourcePosition sourcePosition) {
     super(sourcePosition);
-    this.P1 = P1;
-    this.P2 = P2;
+    this.A1 = A1;
+    this.A2 = A2;
   }
 
-  public SequentialArgument(Argument P1, Argument P2) {
+  public SequentialArgument(Argument A1, Argument A2) {
     super(null);
-    this.P1 = P1;
-    this.P2 = P2;
+    this.A1 = A1;
+    this.A2 = A2;
   }
 
   @Override
@@ -32,7 +32,7 @@ public class SequentialArgument extends Argument {
     }
 
     SequentialArgument other = (SequentialArgument)o;
-    return this.P1.equals(other.P1) && this.P2.equals(other.P2);
+    return this.A1.equals(other.A1) && this.A2.equals(other.A2);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class SequentialArgument extends Argument {
 
   @Override
   public String toString() {
-    return "SequentialArgument { P1 = " + this.P1 + ", P2 = " + this.P2 + " }";
+    return "SequentialArgument { A1 = " + this.A1 + ", A2 = " + this.A2 + " }";
   }
 }
 

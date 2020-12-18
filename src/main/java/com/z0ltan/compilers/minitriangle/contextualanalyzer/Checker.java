@@ -169,9 +169,10 @@ public class Checker implements Visitor {
 
     OperatorDeclaration opdecl = (OperatorDeclaration)expr.O.accept(this, null);
     if (opdecl == null) {
-      ErrorReporter.report("no such operator - " + "\"" + expr.O.spelling +  "\"",
+      ErrorReporter.reportWithNoExit("no such operator - " + "\"" + expr.O.spelling +  "\"",
           expr.sourcePosition.start.line,
           expr.sourcePosition.start.column);
+      expr.type = Types.ERROR;
     } else if (opdecl instanceof BinaryOperatorDeclaration) {
       BinaryOperatorDeclaration binopdecl = (BinaryOperatorDeclaration)opdecl;
       if (!e1Type.equals(binopdecl.Operand1Type)) {

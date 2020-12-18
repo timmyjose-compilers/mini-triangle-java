@@ -9,4 +9,9 @@ public class ErrorType extends Type {
 
     return true;
   }
+
+  @Override
+  public String toString() {
+    return "Error";
+  }
 }
