@@ -23,6 +23,12 @@ public class StandardEnvironment {
   private static final BinaryOperatorDeclaration greaterThanOperatorDeclaration = 
     new BinaryOperatorDeclaration(Types.BOOL, Types.BOOL, Types.BOOL);
 
+  private static final BinaryOperatorDeclaration notEqualToDeclaration = 
+    new BinaryOperatorDeclaration(Types.INT, Types.INT, Types.BOOL);
+
+  private static final BinaryOperatorDeclaration equalToDeclaration = 
+    new BinaryOperatorDeclaration(Types.INT, Types.INT, Types.BOOL);
+
   public static void load(IdentificationTable idTable) {
     idTable.enter("+", plusOperatorDeclaration);
     idTable.enter("-", minusOperationDeclaration);
@@ -30,5 +36,7 @@ public class StandardEnvironment {
     idTable.enter("/", slashOperatorDeclaration);
     idTable.enter("<", lessThanOperatorDeclaration);
     idTable.enter(">", greaterThanOperatorDeclaration);
+    idTable.enter("\\=", notEqualToDeclaration);
+    idTable.enter("=", equalToDeclaration);
   }
 }

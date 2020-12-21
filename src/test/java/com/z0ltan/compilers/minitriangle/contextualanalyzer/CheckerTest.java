@@ -62,6 +62,50 @@ public class CheckerTest extends TestCase {
     printer.print(program);
   }
 
+  public void testIO() {
+    Parser parser = new Parser(Paths.get("samples/io.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
+  }
+
+  public void testNoop() {
+    Parser parser = new Parser(Paths.get("samples/noop.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
+  }
+
+  public void testIsPrime() {
+    Parser parser = new Parser(Paths.get("samples/isprime.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
+  }
+
+  public void testBasic() {
+    Parser parser = new Parser(Paths.get("samples/basic.mt"));
+    Program program = parser.parse();
+
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
+  }
+
   public void testIntro() {
     Parser parser = new Parser(Paths.get("samples/intro.mt"));
     Program program = parser.parse();

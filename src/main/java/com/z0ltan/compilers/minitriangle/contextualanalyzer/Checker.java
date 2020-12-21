@@ -21,6 +21,7 @@ import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.BinaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
+import com.z0ltan.compilers.minitriangle.ast.CharacterExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.UnaryExpression;
@@ -30,6 +31,7 @@ import com.z0ltan.compilers.minitriangle.ast.SimpleVname;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
+import com.z0ltan.compilers.minitriangle.ast.CharacterLiteral;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Type;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Types;
 import com.z0ltan.compilers.minitriangle.error.ErrorReporter;
@@ -185,6 +187,12 @@ public class Checker implements Visitor {
   }
 
   @Override
+  public Object visit(CharacterExpression expr, Object arg) {
+    expr.type = Types.CHAR;
+    return expr.type;
+  }
+
+  @Override
   public Object visit(VnameExpression expr, Object arg) {
     Type vType = (Type) expr.V.accept(this, null);
     expr.type = vType;
@@ -297,6 +305,7 @@ public class Checker implements Visitor {
   public Object visit(VarDeclaration decl, Object arg) {
     decl.T.accept(this, null);
     idTable.enter(decl.I.spelling, decl);
+    idTable.display();
 
     return null;
   }
@@ -351,6 +360,10 @@ public class Checker implements Visitor {
 
       case "Integer":
         td.type = Types.INT;
+        break;
+
+      case "Char":
+        td.type = Types.CHAR;
         break;
 
       default:
@@ -413,6 +426,11 @@ public class Checker implements Visitor {
 
   @Override
   public Object visit(IntegerLiteral intlit, Object arg) {
+    return null;
+  }
+
+  @Override
+  public Object visit(CharacterLiteral charlit, Object arg) {
     return null;
   }
 

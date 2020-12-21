@@ -90,6 +90,26 @@ public class Scanner {
         }
         break;
 
+      case '\'':
+        {
+         skipIt();
+         takeIt();
+         skip('\'');
+         kind = TokenType.CHARACTER_LITERAL;
+        }
+        break;
+
+      case '"':
+        {
+          skipIt();
+          while (currentChar.character != '"') {
+            takeIt();
+          }
+          skipIt();
+          kind = TokenType.STRING;
+        }
+        break;
+
       case '(':
         {
           takeIt();

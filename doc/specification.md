@@ -47,6 +47,7 @@ Expression ::= primary-Expression
             | Expression Operator primary-Expression
 
 primary-Expression ::= Integer-Literal
+                    | Character-Literal
                     | V-name
                     | Operator primary-Expression
                     | "(" Expression ")"

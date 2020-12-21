@@ -25,6 +25,7 @@ import com.z0ltan.compilers.minitriangle.ast.TypeDenoter;
 import com.z0ltan.compilers.minitriangle.ast.SimpleTypeDenoter;
 import com.z0ltan.compilers.minitriangle.ast.Expression;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
+import com.z0ltan.compilers.minitriangle.ast.CharacterExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.UnaryExpression;
@@ -38,6 +39,7 @@ import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
+import com.z0ltan.compilers.minitriangle.ast.CharacterLiteral;
 import com.z0ltan.compilers.minitriangle.error.ErrorReporter;
 
 public class Parser {
@@ -216,6 +218,14 @@ public class Parser {
           IntegerLiteral il = parseIntegerLiteral();
           finish(exprPos);
           expr = new IntegerExpression(il, exprPos);
+        }
+        break;
+
+      case CHARACTER_LITERAL:
+        {
+          CharacterLiteral cl = parseCharacterLiteral();
+          finish(exprPos);
+          expr = new CharacterExpression(cl, exprPos);
         }
         break;
 
@@ -451,6 +461,17 @@ public class Parser {
     acceptIt();
 
     return il;
+  }
+
+  // character-literal ::= char
+  private CharacterLiteral parseCharacterLiteral() {
+    SourcePosition clPos = new SourcePosition();
+    start(clPos);
+    finish(clPos);
+    CharacterLiteral cl = new CharacterLiteral(currentToken.spelling, clPos);
+    acceptIt();
+
+    return cl;
   }
 
   // operator ::= + | - | * | / | < | > | = | \= 

@@ -25,6 +25,6 @@ in
     if (i = half) then
       putint(1) ! prime
     else
-      putint(0); ! not a prime
+      putint(0) ! not a prime
    end
 

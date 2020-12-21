@@ -18,6 +18,7 @@ import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.BinaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
+import com.z0ltan.compilers.minitriangle.ast.CharacterExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.UnaryExpression;
@@ -27,6 +28,7 @@ import com.z0ltan.compilers.minitriangle.ast.SimpleVname;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
+import com.z0ltan.compilers.minitriangle.ast.CharacterLiteral;
 
 public class AstPrinter implements Visitor {
   @Override
@@ -362,6 +364,24 @@ public class AstPrinter implements Visitor {
   }
 
   @Override
+  public Object visit(CharacterExpression expr, Object arg) {
+    int startPos = (int)arg;
+    String header = "CharacterExpression {";
+    String field1 = "I = ";
+    String field2 = ", type = ";
+
+    printWithNewlineAt(0, header);
+    int offset = startPos + header.length() / 3;
+    printAt(offset, field1);
+    expr.I.accept(this, offset);
+    printAt(offset, field2);
+    printWithNewlineAt(0, expr.type.toString());
+    printWithNewlineAt(startPos, "}");
+
+    return null;
+  }
+
+  @Override
   public Object visit(VnameExpression expr, Object arg) {
     int startPos = (int)arg;
     String header = "VnameExpression {";
@@ -522,6 +542,21 @@ public class AstPrinter implements Visitor {
     int offset = startPos + header.length() / 3;
     printAt(offset, field1);
     printWithNewlineAt(0, intlit.spelling);
+    printWithNewlineAt(startPos, "}");
+
+    return null;
+  }
+
+  @Override
+  public Object visit(CharacterLiteral charlit, Object arg) {
+    int startPos = (int)arg;
+    String header = "CharacterLiteral {";
+    String field1 = "spelling = ";
+
+    printWithNewlineAt(0, header);
+    int offset = startPos + header.length() / 3;
+    printAt(offset, field1);
+    printWithNewlineAt(0, charlit.spelling);
     printWithNewlineAt(startPos, "}");
 
     return null;

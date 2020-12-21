@@ -40,6 +40,42 @@ public class ScannerTest extends TestCase {
     assertEquals(TokenType.EOF, scanner.scan().kind);
   }
 
+  public void testNoop() {
+    ScannerTestCase[] testCases = new ScannerTestCase[] {
+      new ScannerTestCase(TokenType.LET, "let"),
+          new ScannerTestCase(TokenType.VAR, "var"),
+          new ScannerTestCase(TokenType.IDENTIFIER, "n"),
+          new ScannerTestCase(TokenType.COLON, ":"),
+          new ScannerTestCase(TokenType.IDENTIFIER, "Integer"),
+          new ScannerTestCase(TokenType.SEMICOLON, ";"),
+          new ScannerTestCase(TokenType.VAR, "var"),
+          new ScannerTestCase(TokenType.IDENTIFIER, "c"),
+          new ScannerTestCase(TokenType.COLON, ":"),
+          new ScannerTestCase(TokenType.IDENTIFIER, "Char"),
+          new ScannerTestCase(TokenType.IN, "in"),
+          new ScannerTestCase(TokenType.BEGIN, "begin"),
+          new ScannerTestCase(TokenType.IDENTIFIER, "c"),
+          new ScannerTestCase(TokenType.BECOMES, ":="),
+          new ScannerTestCase(TokenType.CHARACTER_LITERAL, "&"),
+          new ScannerTestCase(TokenType.SEMICOLON, ";"),
+          new ScannerTestCase(TokenType.IDENTIFIER, "n"),
+          new ScannerTestCase(TokenType.BECOMES, ":="),
+          new ScannerTestCase(TokenType.IDENTIFIER, "n"),
+          new ScannerTestCase(TokenType.OPERATOR, "+"),
+          new ScannerTestCase(TokenType.INTEGER_LITERAL, "1"),
+          new ScannerTestCase(TokenType.END, "end"),
+    };
+
+    Scanner scanner = new Scanner(Paths.get("samples/noop.mt"));
+    for (int i = 0; i < testCases.length; i++) {
+      Token token = scanner.scan();
+      assertEquals(testCases[i].expectedKind, token.kind);
+      assertEquals(testCases[i].expectedSpelling, token.spelling);
+    }
+
+    assertEquals(TokenType.EOF, scanner.scan().kind);
+  }
+
   public void testIntro() {
     ScannerTestCase[] testCases = new ScannerTestCase[] {
       new ScannerTestCase(TokenType.LET, "let"),
@@ -615,7 +651,6 @@ public class ScannerTest extends TestCase {
           new ScannerTestCase(TokenType.LEFT_PAREN, "("),
           new ScannerTestCase(TokenType.INTEGER_LITERAL, "0"),
           new ScannerTestCase(TokenType.RIGHT_PAREN, ")"),
-          new ScannerTestCase(TokenType.SEMICOLON, ";"),
           new ScannerTestCase(TokenType.END, "end"),
     };
 

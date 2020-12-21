@@ -3,6 +3,7 @@ package com.z0ltan.compilers.minitriangle.scanner;
 public enum TokenType {
   BECOMES, // :=
   BEGIN,
+  CHARACTER_LITERAL,
   COLON,
   COMMA,
   CONST,
@@ -23,6 +24,7 @@ public enum TokenType {
   RETURN,
   RIGHT_PAREN,
   SEMICOLON,
+  STRING,
   THEN,
   VAR,
   WHILE,

@@ -27,6 +27,7 @@ import com.z0ltan.compilers.minitriangle.ast.TypeDenoter;
 import com.z0ltan.compilers.minitriangle.ast.SimpleTypeDenoter;
 import com.z0ltan.compilers.minitriangle.ast.Expression;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
+import com.z0ltan.compilers.minitriangle.ast.CharacterExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.BinaryExpression;
@@ -39,6 +40,7 @@ import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
+import com.z0ltan.compilers.minitriangle.ast.CharacterLiteral;
 import com.z0ltan.compilers.minitriangle.error.ErrorReporter;
 
 public class ParserTest extends TestCase {
@@ -54,6 +56,24 @@ public class ParserTest extends TestCase {
     Parser parser = new Parser(Paths.get("samples/empty.mt"));
     Program program = parser.parse();
     assertNull(program);
+  }
+
+  public void testNoop() {
+    Program expectedAst = 
+      new Program(
+          new LetCommand(
+            new SequentialDeclaration(
+              new VarDeclaration(new Identifier("n"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new VarDeclaration(new Identifier("c"), new SimpleTypeDenoter(new Identifier("Char")))
+              ),
+            new SequentialCommand(
+              new AssignCommand(new SimpleVname(new Identifier("c")), new CharacterExpression(new CharacterLiteral("&"))),
+              new AssignCommand(new SimpleVname(new Identifier("n")), new BinaryExpression(new VnameExpression(new SimpleVname(new Identifier("n"))),
+                  new Operator("+"), new IntegerExpression(new IntegerLiteral("1")))))
+            ));
+    Parser parser = new Parser(Paths.get("samples/noop.mt"));
+    Program program = parser.parse();
+    assertEquals(expectedAst, program);
   }
 
   public void testIntro() {

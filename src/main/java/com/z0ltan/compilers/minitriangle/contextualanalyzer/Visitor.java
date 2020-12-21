@@ -18,6 +18,7 @@ import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.BinaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.IntegerExpression;
+import com.z0ltan.compilers.minitriangle.ast.CharacterExpression;
 import com.z0ltan.compilers.minitriangle.ast.VnameExpression;
 import com.z0ltan.compilers.minitriangle.ast.CallExpression;
 import com.z0ltan.compilers.minitriangle.ast.UnaryExpression;
@@ -27,6 +28,7 @@ import com.z0ltan.compilers.minitriangle.ast.SimpleVname;
 import com.z0ltan.compilers.minitriangle.ast.Identifier;
 import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
+import com.z0ltan.compilers.minitriangle.ast.CharacterLiteral;
 
 public interface Visitor {
   Object visit(Program program, Object arg);
@@ -47,6 +49,7 @@ public interface Visitor {
   Object visit(BinaryOperatorDeclaration decl, Object arg);
   Object visit(SequentialDeclaration decl, Object arg);
   Object visit(IntegerExpression expr, Object arg);
+  Object visit(CharacterExpression expr, Object arg);
   Object visit(VnameExpression expr, Object arg);
   Object visit(CallExpression expr, Object arg);
   Object visit(UnaryExpression expr, Object arg);
@@ -56,4 +59,5 @@ public interface Visitor {
   Object visit(Identifier id, Object arg);
   Object visit(Operator op, Object arg);
   Object visit(IntegerLiteral intlit, Object arg);
+  Object visit(CharacterLiteral charlit, Object arg);
 }
