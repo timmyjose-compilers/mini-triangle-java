@@ -364,6 +364,27 @@ public class Parser {
         }
         break;
 
+      case PROCEDURE:
+        {
+          acceptIt();
+          Identifier id = parseIdentifier();
+          acceptIt(TokenType.LEFT_PAREN);
+          ParamDeclaration p = null;
+
+          if (currentToken.kind == TokenType.RIGHT_PAREN) {
+            acceptIt();
+          } else {
+            p = parseParamDeclaration();
+            acceptIt(TokenType.RIGHT_PAREN);
+          }
+          accept(TokenType.RIGHT_PAREN);
+          accept(TokenType.IS);
+          Command cmd = parseCommand();
+          finish(declPos);
+          decl = new ProcedureDeclaration(id, o, cmd, declPos);
+        }
+        break;
+
       case FUNCTION:
         {
           acceptIt();
@@ -375,8 +396,8 @@ public class Parser {
             acceptIt();
           } else {
             p = parseParamDeclaration();
+            accept(TokenType.RIGHT_PAREN);
           }
-          accept(TokenType.RIGHT_PAREN);
           accept(TokenType.COLON);
           TypeDenoter td = parseTypeDenoter();
           accept(TokenType.IS);

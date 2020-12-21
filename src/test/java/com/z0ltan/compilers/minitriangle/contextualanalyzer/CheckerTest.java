@@ -171,5 +171,13 @@ public class CheckerTest extends TestCase {
     AstPrinter printer = new AstPrinter();
     printer.print(program);
   }
+
+  public void testIOBasic() {
+
+  }
+
+  public void testIOExtended() {
+
+  }
 }
 

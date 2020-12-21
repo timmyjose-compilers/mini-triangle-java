@@ -21,6 +21,7 @@ public enum TokenType {
   LEFT_PAREN,
   LET,
   OPERATOR,
+  PROC,
   RETURN,
   RIGHT_PAREN,
   SEMICOLON,

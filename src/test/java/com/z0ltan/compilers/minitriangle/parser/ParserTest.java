@@ -244,4 +244,12 @@ public class ParserTest extends TestCase {
     Parser parser = new Parser(Paths.get("samples/precedence.mt"));
     Program program = parser.parse();
   }
+
+  public void testIOBasic() {
+
+  }
+
+  public void testIOExtended() {
+
+  }
 }

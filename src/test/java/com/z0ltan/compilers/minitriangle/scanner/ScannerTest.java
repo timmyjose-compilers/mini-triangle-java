@@ -1010,6 +1010,11 @@ public class ScannerTest extends TestCase {
     }
 
     assertEquals(TokenType.EOF, scanner.scan().kind);
+  }
 
+  void testIOBasic() {
+  }
+
+  void testIOExtended() {
   }
 }

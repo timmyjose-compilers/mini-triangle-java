@@ -23,6 +23,7 @@ public class Token {
     keywords.put("if", TokenType.IF);
     keywords.put("in", TokenType.IN);
     keywords.put("let", TokenType.LET);
+    keywords.put("proc", TokenType.PROCEDURE);
     keywords.put("return", TokenType.RETURN);
     keywords.put("then", TokenType.THEN);
     keywords.put("var", TokenType.VAR);
