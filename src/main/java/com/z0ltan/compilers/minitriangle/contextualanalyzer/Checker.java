@@ -15,6 +15,7 @@ import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.Declaration;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.ProcedureDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.OperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
@@ -72,7 +73,8 @@ public class Checker implements Visitor {
   @Override
   public Object visit(CallCommand cmd, Object arg) {
     cmd.I.accept(this, null);
-    cmd.E.accept(this, null);
+    Declaration decl = (Declaration)cmd.I.accept(this, null);
+    cmd.A.accept(this, ((ProcedureDeclaration)decl).P);
 
     return null;
   }
@@ -129,7 +131,9 @@ public class Checker implements Visitor {
   @Override
   public Object visit(FormalParamDeclaration param, Object arg) {
     param.T.accept(this, null);
+    System.out.println("Entering " + param.I.spelling);
     idTable.enter(param.I.spelling, param);
+    idTable.display();
 
     return null;
   }
@@ -279,6 +283,10 @@ public class Checker implements Visitor {
           expr.sourcePosition.start.line,
           expr.sourcePosition.start.column);
       expr.type = Types.ERROR;
+    } else if (decl instanceof ProcedureDeclaration) {
+      ProcedureDeclaration procDecl = (ProcedureDeclaration)decl;
+      expr.A.accept(this, procDecl.P);
+      expr.type = Types.VOID;
     } else if (decl instanceof FunctionDeclaration) {
       FunctionDeclaration funcDecl = (FunctionDeclaration)decl;
       expr.A.accept(this, funcDecl.P);
@@ -305,7 +313,6 @@ public class Checker implements Visitor {
   public Object visit(VarDeclaration decl, Object arg) {
     decl.T.accept(this, null);
     idTable.enter(decl.I.spelling, decl);
-    idTable.display();
 
     return null;
   }
@@ -325,13 +332,24 @@ public class Checker implements Visitor {
   }
 
   @Override
+  public Object visit(ProcedureDeclaration decl, Object arg) {
+    idTable.enter(decl.I.spelling, decl); 
+    idTable.openScope();
+    decl.P.accept(this, null);
+    decl.C.accept(this, null);
+    idTable.closeScope();
+
+    return null;
+  }
+
+  @Override
   public Object visit(FunctionDeclaration decl, Object arg) {
     Type tdType = (Type)decl.T.accept(this, null);
     idTable.enter(decl.I.spelling, decl);
     idTable.openScope();
     decl.P.accept(this, decl);
-    idTable.closeScope();
     Type eType = (Type)decl.E.accept(this, null);
+    idTable.closeScope();
 
     if (!eType.equals(tdType)) {
       ErrorReporter.reportWithNoExit("function's declared type \"" + tdType.toString() + 
@@ -354,6 +372,10 @@ public class Checker implements Visitor {
   @Override
   public Object visit(SimpleTypeDenoter td, Object arg) {
     switch (td.I.spelling) {
+      case "Any":
+        td.type = Types.ANY;
+        break;
+
       case "Boolean":
         td.type = Types.BOOL;
         break;
@@ -379,7 +401,9 @@ public class Checker implements Visitor {
   public Object visit(SimpleVname vname, Object arg) {
     Declaration decl = (Declaration) vname.I.accept(this, null);
 
+    idTable.display();
     if (decl == null) {
+      System.out.println("vname = " + vname);
       ErrorReporter.reportWithNoExit("\"" + vname.I.spelling + "\" is undeclared",
           vname.sourcePosition.start.line,
           vname.sourcePosition.start.column);

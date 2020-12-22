@@ -19,6 +19,7 @@ import com.z0ltan.compilers.minitriangle.ast.SequentialCommand;
 import com.z0ltan.compilers.minitriangle.ast.Declaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.ProcedureDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.Vname;
@@ -89,7 +90,7 @@ public class ParserTest extends TestCase {
                   new BinaryExpression(new IntegerExpression(new IntegerLiteral("2")), new Operator("*"), new VnameExpression(new SimpleVname(new Identifier("m")))), 
                   new Operator("*"),
                   new VnameExpression(new SimpleVname(new Identifier("n"))))),
-              new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("n")))))));
+              new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("n"))))))));
     Parser parser = new Parser(Paths.get("samples/intro.mt"));
     Program program = parser.parse();
     assertEquals(expectedAst, program);
@@ -116,7 +117,7 @@ public class ParserTest extends TestCase {
                         new Operator("*"), new VnameExpression(new SimpleVname(new Identifier("x"))))),
                     new AssignCommand(new SimpleVname(new Identifier("x")), new BinaryExpression(new VnameExpression(new SimpleVname(new Identifier("x"))),
                         new Operator("-"), new IntegerExpression(new IntegerLiteral("1"))))))),
-              new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("fact")))))));
+              new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("fact"))))))));
 
     Parser parser = new Parser(Paths.get("samples/factorial.mt"));
     Program program = parser.parse();
@@ -155,7 +156,7 @@ public class ParserTest extends TestCase {
                 new CallExpression(new Identifier("foo"), 
                   new SequentialArgument(new CallArgument(new VnameExpression(new SimpleVname(new Identifier("x")))),
                     new CallArgument(new VnameExpression(new SimpleVname(new Identifier("y")))))))),
-            new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("z")))))));
+            new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("z"))))))));
     Parser parser = new Parser(Paths.get("samples/function.mt"));
     Program program = parser.parse();
   }
@@ -180,8 +181,8 @@ public class ParserTest extends TestCase {
                       new SequentialCommand(
                         new AssignCommand(new SimpleVname(new Identifier("x")), new IntegerExpression(new IntegerLiteral("100"))),
                         new AssignCommand(new SimpleVname(new Identifier("x")), new VnameExpression(new SimpleVname(new Identifier("y")))))),
-                    new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("y"))))),
-                  new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("x")))))))));
+                    new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("y")))))),
+                  new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("x"))))))))));
 
     Parser parser = new Parser(Paths.get("samples/scope.mt"));
     Program program = parser.parse();
@@ -203,7 +204,7 @@ public class ParserTest extends TestCase {
                 new VarDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
                 new SequentialCommand(
                   new AssignCommand(new SimpleVname(new Identifier("x")), new VnameExpression(new SimpleVname(new Identifier("y")))),
-                  new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("x")))))))));
+                  new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("x"))))))))));
 
     Parser parser = new Parser(Paths.get("samples/scope_given.mt"));
     Program program = parser.parse();
@@ -239,17 +240,55 @@ public class ParserTest extends TestCase {
                             new VnameExpression(new SimpleVname(new Identifier("y")))),
                           new Operator("*"),
                           new VnameExpression(new SimpleVname(new Identifier("z"))))),
-                        new CallCommand(new Identifier("putint"), new VnameExpression(new SimpleVname(new Identifier("sum")))))))))));
+                        new CallCommand(new Identifier("putint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("sum"))))))))))));
 
     Parser parser = new Parser(Paths.get("samples/precedence.mt"));
     Program program = parser.parse();
   }
 
   public void testIOBasic() {
-
+    Program expectedAst = new Program(
+        new LetCommand(
+          new SequentialDeclaration(
+            new VarDeclaration(new Identifier("n"), new SimpleTypeDenoter(new Identifier("Integer"))),
+            new FunctionDeclaration(new Identifier("inc"), new FormalParamDeclaration(new Identifier("x"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new SimpleTypeDenoter(new Identifier("Integer")),
+              new BinaryExpression(new VnameExpression(new SimpleVname(new Identifier("x"))), new Operator("+"), new IntegerExpression(new IntegerLiteral("1"))))),
+          new SequentialCommand(
+            new CallCommand(new Identifier("getint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("n"))))),
+            new CallCommand(new Identifier("putint"), new CallArgument(new CallExpression(new Identifier("inc"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("n"))))))))));
+    Parser parser = new Parser(Paths.get("samples/io_basic.mt"));
+    Program program = parser.parse();
+    assertEquals(expectedAst, program);
   }
 
   public void testIOExtended() {
-
+    Program expectedAst = new Program(
+        new LetCommand(
+          new SequentialDeclaration(
+            new SequentialDeclaration(
+              new VarDeclaration(new Identifier("g"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new FunctionDeclaration(new Identifier("F"), 
+                new SequentialParamDeclaration(new FormalParamDeclaration(new Identifier("m"), new SimpleTypeDenoter(new Identifier("Integer"))),
+                  new FormalParamDeclaration(new Identifier("n"), new SimpleTypeDenoter(new Identifier("Integer")))),
+                new SimpleTypeDenoter(new Identifier("Integer")),
+                new BinaryExpression(
+                  new VnameExpression(new SimpleVname(new Identifier("m"))),
+                  new Operator("*"),
+                  new VnameExpression(new SimpleVname(new Identifier("n")))))),
+            new ProcedureDeclaration(new Identifier("W"), new FormalParamDeclaration(new Identifier("i"), new SimpleTypeDenoter(new Identifier("Integer"))),
+              new LetCommand(
+                new ConstDeclaration(new Identifier("s"), 
+                  new BinaryExpression(new VnameExpression(new SimpleVname(new Identifier("i"))), new Operator("*"), new VnameExpression(new SimpleVname(new Identifier("i"))))),
+                new SequentialCommand(
+                  new CallCommand(new Identifier("putint"), new CallArgument(new CallExpression(new Identifier("F"), new SequentialArgument(new CallArgument(new VnameExpression(new SimpleVname(new Identifier("i")))), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("s")))))))),
+                  new CallCommand(new Identifier("putint"), new CallArgument(new CallExpression(new Identifier("F"), new SequentialArgument(new CallArgument(new VnameExpression(new SimpleVname(new Identifier("s")))), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("s")))))))))))),
+          new SequentialCommand(
+            new CallCommand(new Identifier("getint"), new CallArgument(new VnameExpression(new SimpleVname(new Identifier("g"))))),
+            new CallCommand(new Identifier("W"), new CallArgument(new BinaryExpression(new VnameExpression(new SimpleVname(new Identifier("g"))), 
+                  new Operator("+"), new IntegerExpression(new IntegerLiteral("1"))))))));
+    Parser parser = new Parser(Paths.get("samples/io_extended.mt"));
+    Program program = parser.parse();
+    assertEquals(expectedAst, program);
   }
 }

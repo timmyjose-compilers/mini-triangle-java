@@ -13,6 +13,7 @@ import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.ProcedureDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.BinaryOperatorDeclaration;
@@ -44,6 +45,7 @@ public interface Visitor {
   Object visit(SequentialArgument callarg, Object arg);
   Object visit(ConstDeclaration decl, Object arg);
   Object visit(VarDeclaration decl, Object arg);
+  Object visit(ProcedureDeclaration decl, Object arg);
   Object visit(FunctionDeclaration decl, Object arg);
   Object visit(UnaryOperatorDeclaration decl, Object arg);
   Object visit(BinaryOperatorDeclaration decl, Object arg);

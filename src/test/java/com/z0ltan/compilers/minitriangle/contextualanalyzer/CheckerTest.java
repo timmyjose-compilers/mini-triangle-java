@@ -173,11 +173,25 @@ public class CheckerTest extends TestCase {
   }
 
   public void testIOBasic() {
+    Parser parser = new Parser(Paths.get("samples/io_basic.mt"));
+    Program program = parser.parse();
 
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 
   public void testIOExtended() {
+    Parser parser = new Parser(Paths.get("samples/io_extended.mt"));
+    Program program = parser.parse();
 
+    Checker checker = new Checker();
+    checker.check(program);
+
+    AstPrinter printer = new AstPrinter();
+    printer.print(program);
   }
 }
 

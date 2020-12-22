@@ -13,6 +13,7 @@ import com.z0ltan.compilers.minitriangle.ast.CallArgument;
 import com.z0ltan.compilers.minitriangle.ast.SequentialArgument;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.ProcedureDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.UnaryOperatorDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.BinaryOperatorDeclaration;
@@ -78,7 +79,7 @@ public class AstPrinter implements Visitor {
     printAt(offset, field1);
     cmd.I.accept(this, offset);
     printAt(offset, field2);
-    cmd.E.accept(this, offset);
+    cmd.A.accept(this, offset);
     printWithNewlineAt(startPos, "}");
 
     return null;
@@ -262,6 +263,28 @@ public class AstPrinter implements Visitor {
     printWithNewlineAt(startPos, "}");
 
     return null;
+  }
+
+  @Override
+  public Object visit(ProcedureDeclaration decl, Object arg) {
+    int startPos = (int)arg;
+    String header = "ProcedureDeclaration {";
+    String field1 = "I = ";
+    String field2 = ", P = ";
+    String field3 = ", C = ";
+
+    printWithNewlineAt(0, header);
+    int offset = startPos + header.length() / 3;
+    printAt(offset, field1);
+    decl.I.accept(this, offset);
+    printAt(offset, field2);
+    decl.P.accept(this, offset);
+    printAt(offset, field3);
+    decl.C.accept(this, offset);
+    printWithNewlineAt(startPos, "}");
+
+    return null;
+
   }
 
   @Override

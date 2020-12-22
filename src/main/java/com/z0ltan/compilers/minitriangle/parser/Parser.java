@@ -17,6 +17,7 @@ import com.z0ltan.compilers.minitriangle.ast.SequentialCommand;
 import com.z0ltan.compilers.minitriangle.ast.Declaration;
 import com.z0ltan.compilers.minitriangle.ast.VarDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.ConstDeclaration;
+import com.z0ltan.compilers.minitriangle.ast.ProcedureDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.FunctionDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.SequentialDeclaration;
 import com.z0ltan.compilers.minitriangle.ast.Vname;
@@ -118,10 +119,13 @@ public class Parser {
             case LEFT_PAREN:
               {
                 acceptIt();
-                Expression expr = parseExpression();
+                if (currentToken.kind == TokenType.VAR) {
+                  acceptIt();
+                }
+                Argument args = parseArgument();
                 accept(TokenType.RIGHT_PAREN);
                 finish(cmdPos);
-                cmd = new CallCommand(id, expr, cmdPos);
+                cmd = new CallCommand(id, args, cmdPos);
               }
               break;
 
@@ -240,7 +244,7 @@ public class Parser {
             expr = new CallExpression(id, args, exprPos);
           } else {
             finish(exprPos);
-            expr = new VnameExpression(new SimpleVname(id), exprPos);
+            expr = new VnameExpression(new SimpleVname(id));
           }
         }
         break;
@@ -368,20 +372,19 @@ public class Parser {
         {
           acceptIt();
           Identifier id = parseIdentifier();
-          acceptIt(TokenType.LEFT_PAREN);
+          accept(TokenType.LEFT_PAREN);
           ParamDeclaration p = null;
 
           if (currentToken.kind == TokenType.RIGHT_PAREN) {
             acceptIt();
           } else {
             p = parseParamDeclaration();
-            acceptIt(TokenType.RIGHT_PAREN);
+            accept(TokenType.RIGHT_PAREN);
           }
-          accept(TokenType.RIGHT_PAREN);
           accept(TokenType.IS);
           Command cmd = parseCommand();
           finish(declPos);
-          decl = new ProcedureDeclaration(id, o, cmd, declPos);
+          decl = new ProcedureDeclaration(id, p, cmd, declPos);
         }
         break;
 

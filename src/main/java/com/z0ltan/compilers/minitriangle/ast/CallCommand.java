@@ -6,18 +6,18 @@ import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
 
 public class CallCommand extends Command {
   public Identifier I;
-  public Expression E;
+  public Argument A;
 
-  public CallCommand(Identifier I, Expression E, SourcePosition sourcePosition) {
+  public CallCommand(Identifier I, Argument A, SourcePosition sourcePosition) {
     super(sourcePosition);
     this.I = I;
-    this.E = E;
+    this.A = A;
   }
 
-  public CallCommand(Identifier I, Expression E) {
+  public CallCommand(Identifier I, Argument A) {
     super(null);
     this.I = I;
-    this.E = E;
+    this.A = A;
   }
 
   @Override
@@ -32,7 +32,7 @@ public class CallCommand extends Command {
     }
 
     CallCommand other = (CallCommand)o;
-    return this.I.equals(other.I) && this.E.equals(other.E);
+    return this.I.equals(other.I) && this.A.equals(other.A);
   }
 
   @Override
@@ -42,6 +42,6 @@ public class CallCommand extends Command {
 
   @Override
   public String toString() {
-    return "CallCommand { I = " + this.I + ", E = " + this.E + " }";
+    return "CallCommand { I = " + this.I + ", A = " + this.A + " }";
   }
 }

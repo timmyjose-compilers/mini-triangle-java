@@ -1,20 +1,19 @@
 package com.z0ltan.compilers.minitriangle.contextualanalyzer;
 
-public class IntegerType extends Type {
+public class VoidType extends Type {
   @Override
   public boolean equals(Object o) {
-    if (o == null) {
+    if (o == null || !(o instanceof VoidType)) {
       return false;
     }
 
-    if (o instanceof AnyType || o instanceof IntegerType) {
-      return true;
-    }
-    return false;
+    return true;
   }
 
   @Override
   public String toString() {
-    return "Integer";
+    return "Void";
   }
 }
+
+
