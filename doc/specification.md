@@ -202,3 +202,174 @@ A declaration D is elaborated to produce bindings. It may also have the side-eff
     deallocated upon exit from the block.
   - A SequentialDeclaration D1 ; D2 is elaborated as follows: elaborate D1 producing bindings b1, and then elaborate D2 producing bindings b2 in the environment overlaid by b1.
 
+
+# Code Generation
+
+The complete Code Specification (code functions + code templates) for Mini-Triangle is given below. This is specifically for the TAM (Triangle Abstract Machine) backend.
+
+Code functions:
+
+```
+run : Program -> Instruction*
+
+execute : Command -> Instruction*
+
+evaluate : Expression -> Instruction*
+
+fetch : V-name -> Instruction*
+
+assign : V-name -> Instruction*
+
+elaborate : Declaration -> Instruction*
+
+```
+
+Semantics of code functions:
+
+| Phrase Class | Code Function | Effect of the generated code                                                                                    |
+|--------------|---------------|-----------------------------------------------------------------------------------------------------------------|
+| Program      | run P         | Run the program P, and then halt. Start and stop with an empty stack.                                           |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| Command      | execute C     | Execute the command C, possibly updating variables, but neither expanding not shrinking the stack.              |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| Expression   | evaluate E    | Evaluate the expression E, and push its result onto the top of the stack, but with no other effects.            |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| V-name       | fetch V       | Push the value of the constant or variable named V onto the top of the stack.                                   |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| V-name       | assign V      | Pop the top of the stack and store it in the variable named V.                                                  |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| Declaration  | elaborate D   | Elaborate the declaration D, expanding the stack to make space for any constants or variables declared therein. |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+
+Code Templates:
+
+Program:
+
+```
+run [[P]] =  run [[C]] =
+  execute C
+  HALT
+```
+
+Commands:
+
+```
+AssignCommand:
+
+execute [[V := E]] = 
+  evaluate E
+  assign V
+
+CallCommand:
+
+execute [[I(E)]] = 
+  evaluate E
+  CALL p
+
+where p is the address of the subroutine referred to by I.
+
+SequentialCommand:
+
+execute [[C1;C2]] =
+  execute C1
+  execute C2
+
+IfCommand:
+
+execute [[If E then C1 else C2]] =
+  evaluate E
+  JUMPIF(0) g
+  execute C2
+  JUMP h
+g: execute C1
+h:
+
+WhileCommand:
+
+execute [[While E do C]] = 
+  JUMP h
+g:  execute C
+h:  evaluate E
+    JUMPIF(1) g
+
+LetCommand:
+
+execute [[Let D in C]] = 
+  elaborate D
+  execute C
+  POP(0) s if s > 0
+
+where s is the size of the storage allocated by D
+```
+
+Expressions:
+
+```
+IntegerExpressions/IntegerLiterals:
+
+evaluate [[IL]] = LOADL v
+
+where v is the value of the integer literal IL
+
+CharacterExpression/CharacterLiteral:
+
+evaluate [[CL]] = LOADL v
+
+where v is the value of the character literal cl
+
+VnameExpression:
+
+evaluate [[V]] = fetch V
+
+UnaryExpression:
+
+evaluate [[O E]] = 
+  evaluate E
+  CALL p
+
+where p is the address of the primitive routine associated with the unary operator O.
+
+BinaryExpression:
+
+evaluate [[E1 O E2]] = 
+  evaluate E1
+  evaluate E2
+  CALL p
+
+where p is the address of the primitive routine associated with the binary operator O.
+
+```
+
+V-name:
+
+```
+fetch [[l]] = LOAD(s) d[SB] where d is the offset of l relative to SB (globals), and s is size(Type(l))
+
+assign [[l]] = STORE(s) d[SB} where d is the offset of l relative to SB (globals), and s is size(Type(l))
+
+```
+
+Declarations:
+
+```
+ConstDeclaration:
+
+elaborate [[const l ~ E]] =
+  evaluate E
+
+where the act of evaluating E will expand the stack with the actual value(s) on the top of the stack.
+
+VarDeclaration:
+
+elaborate [[var l ~ T]] = 
+  PUSH s
+
+where s is size(T).
+
+SequentialDeclaration:
+
+elaborate [[D1; D2]] = 
+  elaborate D1
+  elaborate D2
+
+```
