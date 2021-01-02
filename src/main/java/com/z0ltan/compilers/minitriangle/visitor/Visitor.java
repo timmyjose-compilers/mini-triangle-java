@@ -1,4 +1,4 @@
-package com.z0ltan.compilers.minitriangle.contextualanalyzer;
+package com.z0ltan.compilers.minitriangle.visitor;
 
 import com.z0ltan.compilers.minitriangle.ast.Program;
 import com.z0ltan.compilers.minitriangle.ast.AssignCommand;

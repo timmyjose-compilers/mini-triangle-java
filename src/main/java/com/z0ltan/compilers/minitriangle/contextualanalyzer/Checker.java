@@ -37,6 +37,8 @@ import com.z0ltan.compilers.minitriangle.contextualanalyzer.Type;
 import com.z0ltan.compilers.minitriangle.contextualanalyzer.Types;
 import com.z0ltan.compilers.minitriangle.error.ErrorReporter;
 
+import com.z0ltan.compilers.minitriangle.visitor.Visitor;
+
 public class Checker implements Visitor {
   private IdentificationTable idTable;
 

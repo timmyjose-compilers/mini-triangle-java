@@ -3,7 +3,7 @@ package com.z0ltan.compilers.minitriangle.ast;
 import java.util.Objects;
 
 import com.z0ltan.compilers.minitriangle.scanner.SourcePosition;
-import com.z0ltan.compilers.minitriangle.contextualanalyzer.Visitor;
+import com.z0ltan.compilers.minitriangle.visitor.Visitor;
 
 public class WhileCommand extends Command {
   public Expression E;

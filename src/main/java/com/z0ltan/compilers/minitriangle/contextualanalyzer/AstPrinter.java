@@ -31,6 +31,8 @@ import com.z0ltan.compilers.minitriangle.ast.Operator;
 import com.z0ltan.compilers.minitriangle.ast.IntegerLiteral;
 import com.z0ltan.compilers.minitriangle.ast.CharacterLiteral;
 
+import com.z0ltan.compilers.minitriangle.visitor.Visitor;
+
 public class AstPrinter implements Visitor {
   @Override
   public Object visit(Program program, Object arg) {
